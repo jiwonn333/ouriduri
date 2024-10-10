@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ouriduri_couple_app
 
 ouriduri couple application
@@ -14,3 +15,6 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+=======
+# couple_app_OuriDuri
+>>>>>>> 892444d657c1a30f0a3d566614e34ab22b4fc107
