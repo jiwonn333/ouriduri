@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "700268829125",
+    "project_id": "ouriduri-fa4bd",
+    "storage_bucket": "ouriduri-fa4bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:700268829125:android:159818ac422ea04b6a53ac",
+        "android_client_info": {
+          "package_name": "com.couple.ouriduri.ouriduri_couple_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD57swZVrKPYg5LHhzVrFZePMUMScEnG78"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
