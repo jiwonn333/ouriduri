@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class JoinPage extends StatefulWidget {
@@ -10,8 +12,13 @@ class _JoinPageState extends State<JoinPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final TextEditingController _birthdateController = TextEditingController();
+
+  // 회원가입 시 Firestore에 아이디와 이메일 저장
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -34,25 +41,7 @@ class _JoinPageState extends State<JoinPage> {
               children: [
                 _buildHeader(),
                 _buildInputFields(),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      // 회원가입 로직 구현 (Firebase Firestore에 데이터 저장 등)
-                    }
-                  },
-                  child: Text(
-                    "회원가입",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    backgroundColor: Color(0xffff9094),
-                    foregroundColor: Colors.white,
-                    textStyle: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
+                _btnJoin(),
               ],
             ),
           ),
@@ -67,6 +56,44 @@ class _JoinPageState extends State<JoinPage> {
         /** !!!!! 회원가입에 맞는 이미지로 변경 !!!!! **/
         // Image.asset('assets/join.png'),
       ],
+    );
+  }
+
+  Widget _btnJoin() {
+    return ElevatedButton(
+      onPressed: () async {
+        if (_formKey.currentState?.validate() ?? false) {
+          try {
+            // 회원가입 로직 구현 (Firebase Firestore에 데이터 저장 등)
+            UserCredential userCredential =
+                await _auth.createUserWithEmailAndPassword(
+                    email: _emailController.text.trim(),
+                    password: _passwordController.text.trim());
+
+            await _firestore
+                .collection('users')
+                .doc(userCredential.user?.uid)
+                .set({'id': _idController, 'email': _emailController});
+
+            // 회원가입 성공 시 처리 (로그인 페이지로 이동)
+            Navigator.pop(context);
+          } catch (e) {
+            print("회원가입 실패: $e");
+          }
+        }
+      },
+      child: Text(
+        "회원가입",
+        style: TextStyle(fontSize: 16),
+      ),
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        backgroundColor: Color(0xffff9094),
+        foregroundColor: Colors.white,
+        textStyle: TextStyle(fontWeight: FontWeight.bold),
+      ),
     );
   }
 
