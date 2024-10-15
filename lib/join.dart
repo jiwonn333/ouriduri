@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ouriduri_couple_app/validate.dart';
 
 class JoinPage extends StatefulWidget {
   @override
@@ -19,6 +21,9 @@ class _JoinPageState extends State<JoinPage> {
   // 회원가입 시 Firestore에 아이디와 이메일 저장
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // 생년월일
+  DateTime _selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -105,111 +110,118 @@ class _JoinPageState extends State<JoinPage> {
         children: [
           TextFormField(
             controller: _emailController,
-            decoration: InputDecoration(
-              hintText: "이메일",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide.none,
-              ),
-              fillColor: Colors.grey.withOpacity(0.1),
-              filled: true,
-              prefixIcon: Icon(Icons.email),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '이메일을 입력하세요';
-              }
-              return null;
-            },
+            decoration: _inputDecoration("이메일", Icon(Icons.email)),
+            keyboardType: TextInputType.emailAddress,
+            validator: (value) => JoinValidate().validateEmail(value),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           TextFormField(
             controller: _idController,
-            decoration: InputDecoration(
-              hintText: "아이디",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide.none,
-              ),
-              fillColor: Colors.grey.withOpacity(0.1),
-              filled: true,
-              prefixIcon: Icon(Icons.person),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '아이디를 입력하세요';
-              }
-              return null;
-            },
+            decoration: _inputDecoration("아이디", Icon(Icons.person)),
+            validator: (value) => JoinValidate().validateId(value),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           TextFormField(
             controller: _passwordController,
-            decoration: InputDecoration(
-              hintText: "비밀번호",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide.none,
-              ),
-              fillColor: Colors.grey.withOpacity(0.1),
-              filled: true,
-              prefixIcon: Icon(Icons.lock),
-            ),
+            decoration: _inputDecoration("비밀번호", Icon(Icons.lock)),
             obscureText: true,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '비밀번호를 입력하세요';
-              }
-              return null;
-            },
+            validator: (value) => JoinValidate().validatePassword(value),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           TextFormField(
             controller: _confirmPasswordController,
-            decoration: InputDecoration(
-              hintText: "비밀번호 확인",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide.none,
-              ),
-              fillColor: Colors.grey.withOpacity(0.1),
-              filled: true,
-              prefixIcon: Icon(Icons.lock_outline),
-            ),
+            decoration: _inputDecoration("비밀번호 확인", Icon(Icons.lock_outline)),
             obscureText: true,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '비밀번호를 다시 입력하세요';
-              }
-              if (value != _passwordController.text) {
-                return '비밀번호가 일치하지 않습니다';
-              }
-              return null;
-            },
+            validator: (value) => JoinValidate()
+                .validatePasswordConfirm(value, _passwordController),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           TextFormField(
             controller: _birthdateController,
-            decoration: InputDecoration(
-              hintText: "생년월일 (예: 2000/01/01)",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide.none,
-              ),
-              fillColor: Colors.grey.withOpacity(0.1),
-              filled: true,
-              prefixIcon: Icon(Icons.calendar_today),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '생년월일을 입력하세요';
-              }
-              return null;
+            decoration:
+                _inputDecoration("생년월일을 선택해주세요", Icon(Icons.calendar_today)),
+            onTap: () {
+              _cupertinoDatePicker(context);
             },
+            // onTap: () async {
+            //   final selectedDate = await showDatePicker(
+            //     context: context,
+            //     initialDate: DateTime.now(),
+            //     firstDate: DateTime(1970),
+            //     lastDate: DateTime.now(),
+            //   );
+            //   if(birthDate != null) {
+            //     // 생년월일 받아오기
+            //     // birthDate = selectedDate!;
+            //   }
+            // },
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
         ],
       ),
+    );
+  }
+
+  InputDecoration _inputDecoration(String hintText, Icon icon) {
+    return InputDecoration(
+      hintText: hintText,
+      border: _outlineInputBorder(),
+      fillColor: Colors.grey.withOpacity(0.1),
+      filled: true,
+      prefixIcon: icon,
+    );
+  }
+
+  OutlineInputBorder _outlineInputBorder() {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(20),
+      borderSide: BorderSide.none,
+    );
+  }
+
+  void _cupertinoDatePicker(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Center(
+          child: Container(
+            padding: EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            height: 300,
+            width: 300,
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 200,
+                  child: CupertinoDatePicker(
+                    initialDateTime: DateTime(2000, 1, 1),
+                    mode: CupertinoDatePickerMode.date,
+                    onDateTimeChanged: (DateTime newDate) {
+                      setState(() {
+                        _selectedDate = newDate;
+                        _birthdateController.text =
+                            "${newDate.year}-${newDate.month}-${newDate.day}"; // 선택한 날짜를 포맷하여 TextFormField에 표시
+                      });
+                    },
+                    minimumDate: DateTime(1900),
+                    maximumDate: DateTime.now(),
+                  ),
+                ),
+                SizedBox(height: 10),
+                CupertinoButton(
+                  child: Text('확인'),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // 모달 닫기
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
