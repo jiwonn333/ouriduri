@@ -11,6 +11,8 @@ class JoinPage extends StatefulWidget {
 
 class _JoinPageState extends State<JoinPage> {
   final _formKey = GlobalKey<FormState>();
+
+  // 텍스트 입력 컨트롤러
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -18,12 +20,12 @@ class _JoinPageState extends State<JoinPage> {
       TextEditingController();
   final TextEditingController _birthdateController = TextEditingController();
 
-  // 회원가입 시 Firestore에 아이디와 이메일 저장
+  // Firebase Auth, Firestore
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // 생년월일
-  DateTime _selectedDate = DateTime.now();
+  // 생년월일 기본 값 설정 (현재 날짜)
+  DateTime? _selectedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +69,7 @@ class _JoinPageState extends State<JoinPage> {
   Widget _btnJoin() {
     return ElevatedButton(
       onPressed: () async {
+        // form 검증 후 회원가입 로직 진행
         if (_formKey.currentState?.validate() ?? false) {
           try {
             // 회원가입 로직 구현 (Firebase Firestore에 데이터 저장 등)
@@ -78,7 +81,7 @@ class _JoinPageState extends State<JoinPage> {
             await _firestore
                 .collection('users')
                 .doc(userCredential.user?.uid)
-                .set({'id': _idController, 'email': _emailController});
+                .set({'id': _idController.text.trim(), 'email': _emailController.text.trim()});
 
             // 회원가입 성공 시 처리 (로그인 페이지로 이동)
             Navigator.pop(context);
@@ -108,6 +111,7 @@ class _JoinPageState extends State<JoinPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // 이메일 필드
           TextFormField(
             controller: _emailController,
             decoration: _inputDecoration("이메일", Icon(Icons.email)),
@@ -115,12 +119,16 @@ class _JoinPageState extends State<JoinPage> {
             validator: (value) => JoinValidate().validateEmail(value),
           ),
           const SizedBox(height: 10),
+
+          // 아이디 필드
           TextFormField(
             controller: _idController,
             decoration: _inputDecoration("아이디", Icon(Icons.person)),
             validator: (value) => JoinValidate().validateId(value),
           ),
           const SizedBox(height: 10),
+
+          // 비밀번호 필드
           TextFormField(
             controller: _passwordController,
             decoration: _inputDecoration("비밀번호", Icon(Icons.lock)),
@@ -128,6 +136,8 @@ class _JoinPageState extends State<JoinPage> {
             validator: (value) => JoinValidate().validatePassword(value),
           ),
           const SizedBox(height: 10),
+
+          // 비밀번호 확인 필드
           TextFormField(
             controller: _confirmPasswordController,
             decoration: _inputDecoration("비밀번호 확인", Icon(Icons.lock_outline)),
@@ -136,25 +146,17 @@ class _JoinPageState extends State<JoinPage> {
                 .validatePasswordConfirm(value, _passwordController),
           ),
           const SizedBox(height: 10),
+
+          // 생년월일 필드
           TextFormField(
             controller: _birthdateController,
             decoration:
                 _inputDecoration("생년월일을 선택해주세요", Icon(Icons.calendar_today)),
             onTap: () {
+              // 생년월일 선택을 위해 cupertinoDatePicker 호출
               _cupertinoDatePicker(context);
             },
-            // onTap: () async {
-            //   final selectedDate = await showDatePicker(
-            //     context: context,
-            //     initialDate: DateTime.now(),
-            //     firstDate: DateTime(1970),
-            //     lastDate: DateTime.now(),
-            //   );
-            //   if(birthDate != null) {
-            //     // 생년월일 받아오기
-            //     // birthDate = selectedDate!;
-            //   }
-            // },
+            readOnly: true,
           ),
           const SizedBox(height: 10),
         ],
@@ -203,11 +205,12 @@ class _JoinPageState extends State<JoinPage> {
                       setState(() {
                         _selectedDate = newDate;
                         _birthdateController.text =
-                            "${newDate.year}-${newDate.month}-${newDate.day}"; // 선택한 날짜를 포맷하여 TextFormField에 표시
+                            "${newDate.year}/${newDate.month}/${newDate.day}"; // 선택한 날짜를 포맷하여 TextFormField에 표시
                       });
                     },
                     minimumDate: DateTime(1900),
                     maximumDate: DateTime.now(),
+                    dateOrder: DatePickerDateOrder.ymd, // 기본 날짜 형식 순서 지정
                   ),
                 ),
                 SizedBox(height: 10),
