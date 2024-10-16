@@ -83,7 +83,9 @@ class _JoinPageState extends State<JoinPage> {
                 .doc(userCredential.user?.uid)
                 .set({
               'id': _idController.text.trim(),
-              'email': _emailController.text.trim()
+              'email': _emailController.text.trim(),
+              'password': _passwordController.text.trim(),
+              'birthdate': _birthdateController.text.trim()
             });
 
             // 회원가입 성공 시 처리
@@ -136,7 +138,8 @@ class _JoinPageState extends State<JoinPage> {
             controller: _passwordController,
             decoration: _inputDecoration("비밀번호", Icon(Icons.lock)),
             obscureText: true,
-            validator: (value) => JoinValidate().validatePassword(value, _idController.text.trim()),
+            validator: (value) => JoinValidate()
+                .validatePassword(value, _idController.text.trim()),
           ),
           const SizedBox(height: 10),
 
