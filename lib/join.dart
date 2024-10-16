@@ -136,7 +136,7 @@ class _JoinPageState extends State<JoinPage> {
             controller: _passwordController,
             decoration: _inputDecoration("비밀번호", Icon(Icons.lock)),
             obscureText: true,
-            validator: (value) => JoinValidate().validatePassword(value),
+            validator: (value) => JoinValidate().validatePassword(value, _idController.text.trim()),
           ),
           const SizedBox(height: 10),
 
