@@ -81,10 +81,13 @@ class _JoinPageState extends State<JoinPage> {
             await _firestore
                 .collection('users')
                 .doc(userCredential.user?.uid)
-                .set({'id': _idController.text.trim(), 'email': _emailController.text.trim()});
+                .set({
+              'id': _idController.text.trim(),
+              'email': _emailController.text.trim()
+            });
 
-            // 회원가입 성공 시 처리 (로그인 페이지로 이동)
-            Navigator.pop(context);
+            // 회원가입 성공 시 처리
+            showSignUpSuccessDialog(context);
           } catch (e) {
             print("회원가입 실패: $e");
           }
@@ -225,6 +228,24 @@ class _JoinPageState extends State<JoinPage> {
           ),
         );
       },
+    );
+  }
+
+  void showSignUpSuccessDialog(BuildContext context) {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: Text("회원가입 성공"),
+        actions: [
+          CupertinoDialogAction(
+            child: Text("확인"),
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.pop(context);
+            },
+          )
+        ],
+      ),
     );
   }
 }
