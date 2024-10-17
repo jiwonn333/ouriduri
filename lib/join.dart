@@ -71,6 +71,19 @@ class _JoinPageState extends State<JoinPage> {
       onPressed: () async {
         // form 검증 후 회원가입 로직 진행
         if (_formKey.currentState?.validate() ?? false) {
+
+          // 이메일 중복 검사
+          if(await isEmailDuplicate(_emailController.text.trim())) {
+            showErrorDialog(context, "이미 사용중인 이메일입니다.");
+            return;
+          }
+          // 아이디 중복 검사
+          if(await isIdDuplicate(_idController.text.trim())) {
+            showIdDialog(context, "이미 사용중인 아이디입니다.");
+            return;
+          }
+
+
           try {
             // 회원가입 로직 구현 (Firebase Firestore에 데이터 저장 등)
             UserCredential userCredential =
@@ -251,4 +264,57 @@ class _JoinPageState extends State<JoinPage> {
       ),
     );
   }
+
+  // 이메일 중복 검사
+  Future<bool> isEmailDuplicate(String email) async {
+    final QuerySnapshot result = await _firestore
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+    return result.docs.isNotEmpty;
+  }
+
+  // 아이디 중복 검사
+  Future<bool> isIdDuplicate(String id) async {
+    final QuerySnapshot result = await _firestore
+        .collection('users')
+        .where('id', isEqualTo: id)
+        .get();
+    return result.docs.isNotEmpty;
+  }
+
+  void showErrorDialog(BuildContext context, String message) {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        content: Text(message),
+        actions: [
+          CupertinoDialogAction(
+            child: Text("확인"),
+            onPressed: () {
+              Navigator.of(context).pop(); // 다이얼로그 닫기
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showIdDialog(BuildContext context, String message) {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        content: Text(message),
+        actions: [
+          CupertinoDialogAction(
+            child: Text("확인"),
+            onPressed: () {
+              Navigator.of(context).pop(); // 다이얼로그 닫기
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
 }
