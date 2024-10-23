@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ouriduri_couple_app/validate.dart';
 
 import 'join.dart';
+import 'main.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -11,6 +15,9 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -63,51 +70,20 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           TextFormField(
             controller: _idController,
-            decoration: InputDecoration(
-              hintText: "아이디",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide.none,
-              ),
-              fillColor: Colors.grey.withOpacity(0.1),
-              filled: true,
-              prefixIcon: Icon(Icons.person),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "아이디를 입력하세요";
-              }
-              return null;
-            },
+            decoration: _inputDecoration("아이디", Icon(Icons.person)),
+            validator: (value) => JoinValidate().validateId(value),
           ),
           SizedBox(height: 10),
           TextFormField(
             controller: _passwordController,
-            decoration: InputDecoration(
-              hintText: "비밀번호",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide.none,
-              ),
-              fillColor: Colors.grey.withOpacity(0.1),
-              filled: true,
-              prefixIcon: Icon(Icons.key),
-            ),
+            decoration: _inputDecoration("비밀번호", Icon(Icons.key)),
             obscureText: true,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "비밀번호를 입력하세요";
-              }
-              return null;
-            },
+            validator: (value) => JoinValidate()
+                .validatePassword(value, _idController.text.trim()),
           ),
           SizedBox(height: 10),
           ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState?.validate() ?? false) {
-                // 로그인 로직 구현
-              }
-            },
+            onPressed: _login,
             child: Text(
               "로그인",
               style: TextStyle(fontSize: 16),
@@ -166,5 +142,64 @@ class _LoginPageState extends State<LoginPage> {
         builder: (context) => JoinPage(),
       ),
     );
+  }
+
+  InputDecoration _inputDecoration(String hintText, Icon icon) {
+    return InputDecoration(
+      hintText: hintText,
+      border: _outlineInputBorder(),
+      fillColor: Colors.grey.withOpacity(0.1),
+      filled: true,
+      prefixIcon: icon,
+    );
+  }
+
+  OutlineInputBorder _outlineInputBorder() {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(20),
+      borderSide: BorderSide.none,
+    );
+  }
+
+  Future<void> _login() async {
+    String? email = await _getEmailFromUserId(_idController.text);
+
+    if (email != null) {
+      try {
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+            email: email, password: _passwordController.text);
+        if (userCredential.user != null) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => MainPage()));
+          print("로그인 성공");
+        }
+      } catch (e) {
+        print("로그인실패: $e");
+      }
+    } else {
+      print("해당 아이디에 대한 이메일을 찾을 수 없습니다.");
+    }
+  }
+
+  // Firestore에서 아이디로 이메일 찾기
+  Future<String?> _getEmailFromUserId(String userId) async {
+    try {
+      // 아이디로 firestore에서 이메일 찾기
+      QuerySnapshot result = await _firestore
+          .collection('users')
+          .where('id', isEqualTo: userId)
+          .limit(1)
+          .get();
+
+      if (result.docs.isNotEmpty) {
+        return result.docs.first['email']; // 이메일 반환
+      } else {
+        print('아이디가 존재하지 않음');
+        return null;
+      }
+    } catch (e) {
+      print("이메일 찾기 실패: $e");
+      return null;
+    }
   }
 }

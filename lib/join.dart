@@ -97,7 +97,7 @@ class _JoinPageState extends State<JoinPage> {
                 .set({
               'id': _idController.text.trim(),
               'email': _emailController.text.trim(),
-              'password': _passwordController.text.trim(),
+              'password': _passwordController.text.trim(), /// 비밀번호는 저장 x, 저장하려면 암호화시켜서 (나중에 수정)
               'birthdate': _birthdateController.text.trim()
             });
 
