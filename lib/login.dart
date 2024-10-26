@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ouriduri_couple_app/home.dart';
 import 'package:ouriduri_couple_app/validate.dart';
 
 import 'join.dart';
-import 'main.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -169,8 +169,8 @@ class _LoginPageState extends State<LoginPage> {
         UserCredential userCredential = await _auth.signInWithEmailAndPassword(
             email: email, password: _passwordController.text);
         if (userCredential.user != null) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => MainPage()));
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const HomePage()));
           print("로그인 성공");
         }
       } catch (e) {
