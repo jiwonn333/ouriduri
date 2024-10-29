@@ -56,8 +56,21 @@ class MainPage extends StatelessWidget {
   }
 
   Future<bool> checkUserLoggedIn() async {
-    await Future.delayed(const Duration(seconds: 2)); // 비동기 작업 대기
-    User? currentUser = FirebaseAuth.instance.currentUser; //
-    return currentUser != null; // 로그인 상태인지 확인
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    try {
+      await currentUser?.reload(); // 사용자 세션 갱신
+      currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser != null) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      // 계정이 삭제되었거나 세션이 유효하지 않은 경우 로그아웃
+      await FirebaseAuth.instance.signOut();
+      return false;
+    }
   }
 }
