@@ -21,6 +21,7 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
+        fontFamily: 'Ouriduri',
         splashColor: Colors.transparent, // 클릭 시 리플 색상 투명하게 설정
         highlightColor: Colors.transparent, // 선택 시 하이라이트 색상 투명하게 설정
         splashFactory: NoSplash.splashFactory, // 리플 효과 비활성화화
