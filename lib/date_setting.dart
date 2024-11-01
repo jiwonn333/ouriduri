@@ -1,15 +1,43 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DateSettingPage extends StatefulWidget {
-  const DateSettingPage({super.key});
-
   @override
   State<DateSettingPage> createState() => _DateSettingPageState();
 }
 
 class _DateSettingPageState extends State<DateSettingPage> {
   DateTime? _selectedDate;
+
+  // Firebase Auth UID 가져오기
+  Future<String?> getUserUID() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    return user?.uid;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSelectedDate(); // 저장된 날짜 불러오기
+  }
+
+  // 저장된 날짜 불러오기
+  Future<void> _loadSelectedDate() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? uid = await getUserUID();
+
+    // UID로 저장된 날짜 가져오기
+    String? savedDate = prefs.getString(uid ?? '');
+
+    if (savedDate != null) {
+      setState(() {
+        _selectedDate = DateTime.parse(savedDate); // 불러온 날짜를 DateTime으로 변환
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +54,7 @@ class _DateSettingPageState extends State<DateSettingPage> {
               _buildSelectedDateText(),
               SizedBox(height: 8),
               _buildDatePicker(),
+              SizedBox(height: 10),
               _buildConfirmButton(),
             ],
           ),
@@ -61,7 +90,7 @@ class _DateSettingPageState extends State<DateSettingPage> {
   Widget _buildSelectedDateText() {
     return Text(
       _getFormattedDate(),
-      style: const TextStyle(fontSize: 22, color: Color(0xffff9094)),
+      style: const TextStyle(fontSize: 30, color: Color(0xffff9094)),
     );
   }
 
@@ -101,9 +130,21 @@ class _DateSettingPageState extends State<DateSettingPage> {
               fontFamily: 'Ouriduri'), // 텍스트 색상 흰색으로
         ),
         onPressed: () {
+          _saveSelectedDate();
           Navigator.pop(context, _selectedDate);
         },
       ),
     );
+  }
+
+  // SharedPreferences
+  Future<void> _saveSelectedDate() async {
+    if (_selectedDate != null) {
+      final prefs = await SharedPreferences.getInstance();
+      String? uid = await getUserUID();
+      prefs.setString(uid ?? '', _selectedDate!.toIso8601String());
+      String formattedDate = _getFormattedDate();
+      prefs.setString('${uid}_formatted', formattedDate);
+    }
   }
 }
