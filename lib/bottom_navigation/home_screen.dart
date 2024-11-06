@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:ouriduri_couple_app/date_setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../app_colors.dart';
+
 class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -77,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 children: [
                   Text('지원', style: TextStyle(fontSize: 18)),
-                  Icon(Icons.favorite, color: Color(0xffff9094), size: 16),
+                  Icon(Icons.favorite, color: AppColors.primaryPink, size: 16),
                   Text('영건', style: TextStyle(fontSize: 18)),
                 ],
               ),

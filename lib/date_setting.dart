@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ouriduri_couple_app/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DateSettingPage extends StatefulWidget {
@@ -90,7 +91,7 @@ class _DateSettingPageState extends State<DateSettingPage> {
   Widget _buildSelectedDateText() {
     return Text(
       _getFormattedDate(),
-      style: const TextStyle(fontSize: 30, color: Color(0xffff9094)),
+      style: const TextStyle(fontSize: 30, color: AppColors.primaryPink),
     );
   }
 
@@ -117,7 +118,7 @@ class _DateSettingPageState extends State<DateSettingPage> {
   Widget _buildConfirmButton() {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xffd98c8e), // 배경색 지정
+        color: AppColors.primaryPink, // 배경색 지정
         borderRadius: BorderRadius.circular(8),
       ),
       child: CupertinoButton(

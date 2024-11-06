@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ouriduri_couple_app/validate.dart';
 
+import 'app_colors.dart';
+
 class JoinPage extends StatefulWidget {
   @override
   _JoinPageState createState() => _JoinPageState();
@@ -116,7 +118,7 @@ class _JoinPageState extends State<JoinPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        backgroundColor: Color(0xffff9094),
+        backgroundColor: AppColors.primaryPink,
         foregroundColor: Colors.white,
         textStyle: TextStyle(fontWeight: FontWeight.bold),
       ),

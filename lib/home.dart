@@ -4,6 +4,8 @@ import 'package:ouriduri_couple_app/bottom_navigation/home_screen.dart';
 import 'package:ouriduri_couple_app/bottom_navigation/list_screen.dart';
 import 'package:ouriduri_couple_app/bottom_navigation/setting_screen.dart';
 
+import 'app_colors.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -42,7 +44,7 @@ class _HomePageState extends State<HomePage> {
         ],
         currentIndex: _selectedIndex,
         type: BottomNavigationBarType.fixed, // 아이콘 선택시 다른 아이콘이 밀리지 않도록 고정
-        selectedItemColor: Color(0xffff9094),
+        selectedItemColor: AppColors.primaryPink,
         unselectedItemColor: Colors.black54,
         onTap: _onItemTapped,
         showSelectedLabels: false,

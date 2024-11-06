@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ouriduri_couple_app/home.dart';
 import 'package:ouriduri_couple_app/validate.dart';
 
+import 'app_colors.dart';
 import 'join.dart';
 
 class LoginPage extends StatefulWidget {
@@ -92,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              backgroundColor: Color(0xffff9094),
+              backgroundColor: AppColors.primaryPink,
               foregroundColor: Colors.white,
               textStyle: TextStyle(fontWeight: FontWeight.bold),
             ),
