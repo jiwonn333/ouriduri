@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:ouriduri_couple_app/app_colors.dart';
 import 'package:ouriduri_couple_app/firebase_options.dart';
 import 'package:ouriduri_couple_app/home.dart';
 import 'package:ouriduri_couple_app/login.dart';
@@ -22,6 +23,7 @@ class MainPage extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         fontFamily: 'Ouriduri',
+        scaffoldBackgroundColor: AppColors.primaryBackgroundColor,
         splashColor: Colors.transparent, // 클릭 시 리플 색상 투명하게 설정
         highlightColor: Colors.transparent, // 선택 시 하이라이트 색상 투명하게 설정
         splashFactory: NoSplash.splashFactory, // 리플 효과 비활성화화

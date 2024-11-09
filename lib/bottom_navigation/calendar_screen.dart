@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,21 +18,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   Map<DateTime, List<String>> _events = {};
-  bool _isLoaded = false; // 초기화 방지 test
 
   @override
   void initState() {
     super.initState();
     _selectedDay = _focusedDay;
+    _loadEvents();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_isLoaded) {
-      _loadEvents();  // 빌드 시마다 로드 (한 번만)
-      _isLoaded = true;
-    }
-
     return Scaffold(
       appBar: _buildAppBar(),
       body: Column(
@@ -70,7 +66,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
       lastDay: DateTime.utc(2100, 12, 31),
       focusedDay: _focusedDay,
       calendarFormat: _calendarFormat,
-      selectedDayPredicate: (day) => isSameDay(_getDateOnly(_selectedDay!), _getDateOnly(day)),
+      selectedDayPredicate: (day) =>
+          isSameDay(_getDateOnly(_selectedDay!), _getDateOnly(day)),
       onDaySelected: _onDaySelected,
       onFormatChanged: (format) {
         if (_calendarFormat != format) {
@@ -79,14 +76,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
           });
         }
       },
-      onPageChanged: (focusedDate) => _focusedDay = _getDateOnly(focusedDate), // 날짜만 남기기
+      onPageChanged: (focusedDate) => _focusedDay = _getDateOnly(focusedDate),
+      // 날짜만 남기기
       calendarStyle: _calendarStyle(),
       headerStyle: _headerStyle(),
 
       // 특정 날짜 점 표시
       calendarBuilders: CalendarBuilders(
         markerBuilder: (context, day, event) {
-          if (_events[_getDateOnly(day)] != null && _events[_getDateOnly(day)]!.isNotEmpty) {
+          if (_events[_getDateOnly(day)] != null &&
+              _events[_getDateOnly(day)]!.isNotEmpty) {
             return Positioned(
               bottom: 4,
               child: Container(
@@ -146,30 +145,59 @@ class _CalendarScreenState extends State<CalendarScreen> {
   // 이벤트 버튼을 생성하고, 선택된 날짜에만 표시
   Widget _buildEventButtons() {
     List<String> events = _events[_getDateOnly(_selectedDay!)] ?? []; // 날짜만 남기기
+
+    // 이벤트가 있는 경우에만 이벤트 버튼 표시
+    if (events.isEmpty) {
+      return Container(); // 이벤트가 없으면 빈 컨테이너 반환
+    }
+
+    // 이벤트 버튼을 보여주는데, 이벤트가 많을 경우 스크롤 가능하게 처리
     return Column(
-      children: events.map((event) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-          child: OutlinedButton(
-            onPressed: () {},
-            onLongPress: () {
-              _confirmDeleteEvent(event);
-            },
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size.fromHeight(50),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              side: const BorderSide(color: Colors.black45),
-              splashFactory: NoSplash.splashFactory,
+      children: [
+        if (events.length > 3)
+          // 이벤트가 4개 이상일 경우 스크롤 가능하도록 ListView 사용
+          Container(
+            height: 300, // 고정 높이를 지정하여 스크롤 영역을 만듦
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: events.length,
+              itemBuilder: (context, index) {
+                String event = events[index];
+                return _buildEventButton(event);
+              },
             ),
-            child: Text(
-              event,
-              style: TextStyle(color: Colors.black), // 글자색 검정으로 설정
-            ),
+          )
+        else
+          // 이벤트가 3개 이하일 경우 그냥 Column으로 표시
+          Column(
+            children: events.map((event) => _buildEventButton(event)).toList(),
           ),
-        );
-      }).toList(),
+      ],
+    );
+  }
+
+  // 이벤트 버튼을 생성하고, 선택된 날짜에만 표시
+  Widget _buildEventButton(String event) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      child: OutlinedButton(
+        onPressed: () {},
+        onLongPress: () {
+          _confirmDeleteEvent(event);
+        },
+        style: OutlinedButton.styleFrom(
+          minimumSize: const Size.fromHeight(50),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          side: const BorderSide(color: Colors.black45),
+          splashFactory: NoSplash.splashFactory,
+        ),
+        child: Text(
+          event,
+          style: TextStyle(color: Colors.black), // 글자색 검정으로 설정
+        ),
+      ),
     );
   }
 
@@ -210,42 +238,58 @@ class _CalendarScreenState extends State<CalendarScreen> {
   void _saveEvent(String event) async {
     if (event.isNotEmpty && _selectedDay != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      DateTime dateOnly = _getDateOnly(_selectedDay!); // 시간이 제거된 날짜 사용
-      String formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDay!);
-      setState(() {
-        if (_events[dateOnly] == null) {
-          _events[dateOnly] = [];
-        }
-        _events[dateOnly]!.add(event);
-      });
-      // SharedPreferences에 저장
-      prefs.setStringList(formattedDate, _events[dateOnly]!);
+      String? uid = await _getUserUID();
+      if (uid != null) {
+        DateTime dateOnly = _getDateOnly(_selectedDay!); // 시간이 제거된 날짜 사용
+        String formattedDate = DateFormat('yyyy/MM/dd').format(_selectedDay!);
+        String userSpecificKey =
+            '$uid-$formattedDate'; // uid와 날짜를 결합하여 고유한 키 생성
+
+        setState(() {
+          if (_events[dateOnly] == null) {
+            _events[dateOnly] = [];
+          }
+          _events[dateOnly]!.add(event);
+        });
+
+        // SharedPreferences에 저장
+        prefs.setStringList(userSpecificKey, _events[dateOnly]!);
+
+        print('save userSpecificKey : $userSpecificKey');
+      }
     }
   }
 
   // 저장된 이벤트 불러오기
   void _loadEvents() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<DateTime, List<String>> loadedEvents = {};
-    for (var key in prefs.getKeys()) {
-      if (_isValidDate(key)) {
-        DateTime date = _getDateOnly(DateFormat('yyyy-MM-dd').parse(key));
-        List<String> eventList = prefs.getStringList(key) ?? [];
-        loadedEvents[date] = eventList;
+    String? uid = await _getUserUID();
+    if (uid != null) {
+      Map<DateTime, List<String>> loadedEvents = {};
+      for (var key in prefs.getKeys()) {
+        var parts = key.split('-');
+        if (parts.length > 1) {
+          var datePart = parts[1]; // 날짜 부분 추출
+          print("저장된 날짜 출력 : $datePart"); // "2024/11/10" 출력
+          DateTime date =
+              _getDateOnly(DateFormat('yyyy/MM/dd').parse(datePart));
+          List<String> eventList = prefs.getStringList(key) ?? [];
+          loadedEvents[date] = eventList;
+        } else {
+          print("Invalid key format");
+        }
       }
+
+      setState(() {
+        _events = loadedEvents;
+      });
     }
-
-    print('getkeys() and value : ${loadedEvents.keys} + ${loadedEvents.values}');
-
-    setState(() {
-      _events = loadedEvents;
-    });
   }
 
   // 날짜 형식 'yyyy-MM-dd' 확인
   bool _isValidDate(String key) {
     try {
-      DateFormat('yyyy-MM-dd').parse(key);
+      DateFormat('yyyy/MM/dd').parse(key);
       return true;
     } catch (e) {
       return false;
@@ -277,27 +321,37 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   // 이벤트 삭제 메서드
   void _deleteEvent(String event) async {
-    setState(() {
-      _events[_selectedDay]?.remove(event);
-      if (_events[_selectedDay]?.isEmpty ?? true) {
-        _events.remove(_selectedDay);
-      }
-      _saveEventsToPrefs();
-    });
-  }
-
-  // SharedPreferences에 저장된 이벤트 업데이트
-  void _saveEventsToPrefs() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
     if (_selectedDay != null) {
-      String formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDay!);
-      prefs.setStringList(formattedDate, _events[_selectedDay] ?? []);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? uid = await _getUserUID();
+      if (uid != null) {
+        String formattedDate = DateFormat('yyyy/MM/dd').format(_selectedDay!);
+        String userSpecificKey = '$uid-$formattedDate';
+        setState(() {
+          _events[_selectedDay]?.remove(event); // 해당 날짜에서 이벤트(리스트) 삭제
+          if (_events[_selectedDay]?.isEmpty ?? true) {
+            // 이벤트가 비어있으면 해당 날짜를 _events에서 삭제
+            _events.remove(_selectedDay);
+
+            // 이벤트가 빈 리스트 (즉, 없으면) SharedPreferences 에서 해당 날짜 데이터 삭제(키 삭제)
+            prefs.remove(userSpecificKey);
+          } else {
+            // 이벤트가 남아있으면 업데이트 된 리스트 저장
+            prefs.setStringList(userSpecificKey, _events[_selectedDay] ?? []);
+          }
+        });
+      }
     }
   }
 
   // 헬퍼 메서드: 날짜만 남기기 (시간 정보 제거)
   DateTime _getDateOnly(DateTime date) {
     return DateTime(date.year, date.month, date.day);
+  }
+
+  Future<String?> _getUserUID() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    return user?.uid;
   }
 }

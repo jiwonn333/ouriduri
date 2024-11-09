@@ -34,21 +34,29 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: ''),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.list_alt_rounded), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: ''),
-        ],
-        currentIndex: _selectedIndex,
-        type: BottomNavigationBarType.fixed, // 아이콘 선택시 다른 아이콘이 밀리지 않도록 고정
-        selectedItemColor: AppColors.primaryPink,
-        unselectedItemColor: Colors.black54,
-        onTap: _onItemTapped,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          border: Border(top: BorderSide(color: AppColors.dividerLineColor, width: 1)),
+        ),
+        child: BottomNavigationBar(
+          backgroundColor: AppColors.primaryBackgroundColor,
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_month), label: ''),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.list_alt_rounded), label: ''),
+            BottomNavigationBarItem(icon: Icon(Icons.settings), label: ''),
+          ],
+          currentIndex: _selectedIndex,
+          type: BottomNavigationBarType.fixed,
+          // 아이콘 선택시 다른 아이콘이 밀리지 않도록 고정
+          selectedItemColor: AppColors.primaryPink,
+          unselectedItemColor: Colors.black54,
+          onTap: _onItemTapped,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+        ),
       ),
     );
   }
