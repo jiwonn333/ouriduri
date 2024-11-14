@@ -240,22 +240,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? uid = await _getUserUID();
       if (uid != null) {
-        DateTime dateOnly = _getDateOnly(_selectedDay!); // 시간이 제거된 날짜 사용
-        String formattedDate = DateFormat('yyyy/MM/dd').format(_selectedDay!);
+        DateTime dateOnly = _getDateOnly(_selectedDay!);
         String userSpecificKey =
-            '$uid-$formattedDate'; // uid와 날짜를 결합하여 고유한 키 생성
+            '$uid-${DateFormat('yyyy/MM/dd').format(_selectedDay!)}';
 
         setState(() {
-          if (_events[dateOnly] == null) {
-            _events[dateOnly] = [];
-          }
-          _events[dateOnly]!.add(event);
+          _events.putIfAbsent(dateOnly, () => []).add(event);
         });
-
         // SharedPreferences에 저장
         prefs.setStringList(userSpecificKey, _events[dateOnly]!);
-
-        print('save userSpecificKey : $userSpecificKey');
       }
     }
   }
@@ -264,19 +257,20 @@ class _CalendarScreenState extends State<CalendarScreen> {
   void _loadEvents() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? uid = await _getUserUID();
+    print('get uid : $uid');
     if (uid != null) {
       Map<DateTime, List<String>> loadedEvents = {};
       for (var key in prefs.getKeys()) {
         var parts = key.split('-');
-        if (parts.length > 1) {
-          var datePart = parts[1]; // 날짜 부분 추출
-          print("저장된 날짜 출력 : $datePart"); // "2024/11/10" 출력
+
+        if (parts.length > 1 &&
+            parts.first == uid &&
+            _isValidDate(parts.last)) {
+          // 날짜 부분 추출
           DateTime date =
-              _getDateOnly(DateFormat('yyyy/MM/dd').parse(datePart));
+              _getDateOnly(DateFormat('yyyy/MM/dd').parse(parts.last));
           List<String> eventList = prefs.getStringList(key) ?? [];
           loadedEvents[date] = eventList;
-        } else {
-          print("Invalid key format");
         }
       }
 
@@ -287,9 +281,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   // 날짜 형식 'yyyy-MM-dd' 확인
-  bool _isValidDate(String key) {
+  bool _isValidDate(String date) {
     try {
-      DateFormat('yyyy/MM/dd').parse(key);
+      DateFormat('yyyy/MM/dd').parse(date);
       return true;
     } catch (e) {
       return false;
@@ -325,19 +319,19 @@ class _CalendarScreenState extends State<CalendarScreen> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? uid = await _getUserUID();
       if (uid != null) {
-        String formattedDate = DateFormat('yyyy/MM/dd').format(_selectedDay!);
+        DateTime dateOnly = _getDateOnly(_selectedDay!);
+        String formattedDate = DateFormat('yyyy/MM/dd').format(dateOnly!);
         String userSpecificKey = '$uid-$formattedDate';
         setState(() {
-          _events[_selectedDay]?.remove(event); // 해당 날짜에서 이벤트(리스트) 삭제
-          if (_events[_selectedDay]?.isEmpty ?? true) {
+          _events[dateOnly]?.remove(event); // 해당 날짜에서 이벤트(리스트) 삭제
+          if (_events[dateOnly]?.isEmpty ?? true) {
             // 이벤트가 비어있으면 해당 날짜를 _events에서 삭제
-            _events.remove(_selectedDay);
-
+            _events.remove(dateOnly);
             // 이벤트가 빈 리스트 (즉, 없으면) SharedPreferences 에서 해당 날짜 데이터 삭제(키 삭제)
             prefs.remove(userSpecificKey);
           } else {
             // 이벤트가 남아있으면 업데이트 된 리스트 저장
-            prefs.setStringList(userSpecificKey, _events[_selectedDay] ?? []);
+            prefs.setStringList(userSpecificKey, _events[dateOnly]!);
           }
         });
       }
