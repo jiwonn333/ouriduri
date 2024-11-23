@@ -5,7 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:ouriduri_couple_app/app_colors.dart';
 import 'package:ouriduri_couple_app/firebase_options.dart';
 import 'package:ouriduri_couple_app/home.dart';
-import 'package:ouriduri_couple_app/login.dart';
+import 'package:ouriduri_couple_app/start_scrren.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,8 +24,10 @@ class MainPage extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Ouriduri',
         scaffoldBackgroundColor: AppColors.primaryBackgroundColor,
-        splashColor: Colors.transparent, // 클릭 시 리플 색상 투명하게 설정
-        highlightColor: Colors.transparent, // 선택 시 하이라이트 색상 투명하게 설정
+        splashColor: Colors.transparent,
+        // 클릭 시 리플 색상 투명하게 설정
+        highlightColor: Colors.transparent,
+        // 선택 시 하이라이트 색상 투명하게 설정
         splashFactory: NoSplash.splashFactory, // 리플 효과 비활성화화
       ),
       title: 'Ouriduri App',
@@ -51,7 +53,7 @@ class MainPage extends StatelessWidget {
           else if (snapshot.hasData && snapshot.data == true) {
             return const HomePage(); // 로그인 된 경우
           } else {
-            return LoginPage();
+            return StartScreen();
           }
         },
       ),

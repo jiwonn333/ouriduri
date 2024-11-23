@@ -1,13 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ouriduri_couple_app/connect_page.dart';
 import 'package:ouriduri_couple_app/home.dart';
 import 'package:ouriduri_couple_app/validate.dart';
+import 'package:ouriduri_couple_app/webview_page.dart';
 
 import 'app_colors.dart';
-import 'join.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -22,35 +25,96 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  _buildHeader(),
-                  _buildInputFields(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildTextButton(context, "아이디 찾기", _findId),
-                      _buildTextButton(context, "비밀번호 찾기", _findPassword),
-                      _buildTextButton(context, "회원가입", _joinPage),
-                    ],
-                  ),
-                  // 로고 들어가는 부분
-                  SizedBox(height: 40),
-                  _buildFooter(),
-                ],
-              ),
-            ),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(), // 키보드 닫음
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white70,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(10),
           ),
         ),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+        child: SafeArea(
+            child: SingleChildScrollView(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 16.0),
+                Center(
+                  child: Container(
+                    width: 40.0,
+                    height: 4.0,
+                    decoration: BoxDecoration(
+                      color: Colors.white24,
+                      borderRadius: BorderRadius.circular(2.0),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                // 로그인 타이틀
+                const Center(
+                  child: Text(
+                    '로그인',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                  ),
+                ),
+
+                const SizedBox(height: 24.0),
+                // 아이디 입력필드
+                TextFormField(
+                  controller: _idController,
+                    decoration: _inputDecoration("아이디", Icon(Icons.person)),
+                  validator: (value) => JoinValidate().validateId(value),
+                ),
+
+                const SizedBox(height: 16.0),
+                // 비밀번호 입력 필드
+                TextField(
+                  controller: _passwordController,
+                  decoration: _inputDecoration('비밀번호', Icon(Icons.key)),
+                  obscureText: true,
+                  style: const TextStyle(color: Colors.white),
+                ),
+
+              ]),
+        )),
       ),
     );
+
+    // return SafeArea(
+    //   child: Scaffold(
+    //     resizeToAvoidBottomInset: true,
+    //     body: Center(
+    //       child: SingleChildScrollView(
+    //         child: Padding(
+    //           padding: EdgeInsets.all(20.0),
+    //           child: Column(
+    //             children: [
+    //               _buildHeader(),
+    //               _buildInputFields(),
+    //               Row(
+    //                 mainAxisAlignment: MainAxisAlignment.center,
+    //                 children: [
+    //                   _buildTextButton(context, "아이디 찾기", _findId),
+    //                   _buildTextButton(context, "비밀번호 찾기", _findPassword),
+    //                   _buildTextButton(context, "회원가입", _joinPage),
+    //                 ],
+    //               ),
+    //               // 로고 들어가는 부분
+    //               SizedBox(height: 40),
+    //               _buildFooter(),
+    //             ],
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
   Widget _buildHeader() {
@@ -136,15 +200,6 @@ class _LoginPageState extends State<LoginPage> {
     // 비밀번호 찾기 로직 구현
   }
 
-  void _joinPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => JoinPage(),
-      ),
-    );
-  }
-
   InputDecoration _inputDecoration(String hintText, Icon icon) {
     return InputDecoration(
       hintText: hintText,
@@ -170,8 +225,15 @@ class _LoginPageState extends State<LoginPage> {
         UserCredential userCredential = await _auth.signInWithEmailAndPassword(
             email: email, password: _passwordController.text);
         if (userCredential.user != null) {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const HomePage()));
+          bool isConnected = await _checkConnection(userCredential.user!.uid);
+
+          if (isConnected) {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const HomePage()));
+          } else {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const ConnectPage()));
+          }
           print("로그인 성공");
         }
       } catch (e) {
@@ -202,5 +264,19 @@ class _LoginPageState extends State<LoginPage> {
       print("이메일 찾기 실패: $e");
       return null;
     }
+  }
+
+  // Firestore에서 커플 연결 여부 확인
+  Future<bool> _checkConnection(String userId) async {
+    try {
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(userId).get();
+      if (userDoc.exists) {
+        return userDoc['isConnected'] == true;
+      }
+    } catch (e) {
+      print("커플 연결 상태 확인 실패: $e");
+    }
+    return false;
   }
 }
