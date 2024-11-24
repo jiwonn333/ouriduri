@@ -14,6 +14,8 @@ class JoinBottomSheet extends StatefulWidget {
 }
 
 class _JoinBottomSheetState extends State<JoinBottomSheet> {
+  final _formKey = GlobalKey<FormState>();
+
   // 실시간 에러 메시지 저장
   String? _emailError;
   String? _passwordError;
@@ -80,94 +82,99 @@ class _JoinBottomSheetState extends State<JoinBottomSheet> {
   }
 
   Widget _buildForm() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const SizedBox(height: 24.0),
-        // 회원가입 타이틀
-        const Center(
-          child: Text(
-            '계정 등록',
-            style: TextStyle(
-                fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
-          ),
-        ),
-        const SizedBox(height: 24.0),
-        _buildTextField(
-            controller: _idController,
-            hintText: "아이디",
-            icon: const Icon(Icons.person),
-            validator: (value) {
-              _idError = JoinValidate().validateId(value);
-            }),
-        const SizedBox(height: 8.0),
-
-        _buildTextField(
-            controller: _emailController,
-            hintText: "이메일",
-            icon: Icon(Icons.email),
-            validator: (value) {
-              _emailError = JoinValidate().validateEmail(value);
-            }),
-        const SizedBox(height: 8.0),
-
-        _buildTextField(
-            controller: _passwordController,
-            hintText: "비밀번호",
-            icon: Icon(Icons.lock),
-            obscureText: true,
-            validator: (value) {
-              _passwordError =
-                  JoinValidate().validatePassword(value, _idController.text);
-            }),
-        const SizedBox(height: 8.0),
-
-        _buildTextField(
-            controller: _confirmPasswordController,
-            hintText: "비밀번호 확인",
-            icon: Icon(Icons.lock_outline),
-            obscureText: true,
-            validator: (value) {
-              _passwordConfirmError = JoinValidate()
-                  .validatePasswordConfirm(value, _passwordController.text);
-            }),
-        const SizedBox(height: 8.0),
-
-        // 생년월일 필드
-        TextFormField(
-          controller: _birthdateController,
-          decoration: _inputDecoration(
-              "생년월일을 선택해주세요", const Icon(Icons.calendar_today)),
-          onTap: () {
-            _cupertinoDatePicker(context); // 생년월일 선택
-          },
-          readOnly: true,
-        ),
-        const SizedBox(height: 24.0),
-
-        // 회원가입 버튼
-        ElevatedButton(
-          onPressed: _isFormValid ? _register : null,
-          style: ElevatedButton.styleFrom(
-            minimumSize: const Size(360, 50),
-            backgroundColor: _isFormValid ? AppColors.primaryPink : null,
-            padding: const EdgeInsets.symmetric(
-                horizontal: 32.0, vertical: 12.0), // 버튼 내부 여백 설정
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0), // 버튼 모서리 둥글게 설정
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 24.0),
+          // 회원가입 타이틀
+          const Center(
+            child: Text(
+              '계정 등록',
+              style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
             ),
           ),
-          child: const Text(
-            '등록',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
+          const SizedBox(height: 24.0),
+          _buildTextField(
+              controller: _idController,
+              hintText: "아이디",
+              icon: const Icon(Icons.person),
+              validator: (value) {
+                _idError = JoinValidate().validateId(value);
+              }),
+          const SizedBox(height: 8.0),
+
+          _buildTextField(
+              controller: _emailController,
+              hintText: "이메일",
+              icon: Icon(Icons.email),
+              validator: (value) {
+                _emailError = JoinValidate().validateEmail(value);
+              }),
+          const SizedBox(height: 8.0),
+
+          _buildTextField(
+              controller: _passwordController,
+              hintText: "비밀번호",
+              icon: Icon(Icons.lock),
+              obscureText: true,
+              validator: (value) {
+                _passwordError =
+                    JoinValidate().validatePassword(value, _idController.text);
+              }),
+          const SizedBox(height: 8.0),
+
+          _buildTextField(
+              controller: _confirmPasswordController,
+              hintText: "비밀번호 확인",
+              icon: Icon(Icons.lock_outline),
+              obscureText: true,
+              validator: (value) {
+                _passwordConfirmError = JoinValidate()
+                    .validatePasswordConfirm(value, _passwordController.text);
+              }),
+          const SizedBox(height: 8.0),
+
+          // 생년월일 필드
+          TextFormField(
+            controller: _birthdateController,
+            decoration: _inputDecoration(
+                "생년월일을 선택해주세요", const Icon(Icons.calendar_today)),
+            onTap: () {
+              _cupertinoDatePicker(context); // 생년월일 선택
+            },
+            readOnly: true,
+          ),
+          const SizedBox(height: 24.0),
+
+          // 회원가입 버튼
+          ElevatedButton(
+            onPressed: _isFormValid ? _register : null,
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size(360, 50),
+              backgroundColor: _isFormValid ? AppColors.primaryPink : null,
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 32.0, vertical: 12.0), // 버튼 내부 여백 설정
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0), // 버튼 모서리 둥글게 설정
+              ),
+            ),
+            child: const Text(
+              '등록',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -257,36 +264,67 @@ class _JoinBottomSheetState extends State<JoinBottomSheet> {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
-    // 필수 입력 검증
-    if (id.isEmpty || email.isEmpty || password.isEmpty) {
-      _showErrorMessage("모든 필드를 입력해주세요.");
-      return;
-    }
-
-    try {
-      // Firebase Auth로 사용자 등록
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      if (userCredential.user != null) {
-        // Firestore에 사용자 정보 저장
-        await _firestore.collection('users').doc(userCredential.user!.uid).set({
-          'id': id,
-          'email': email,
-          'birthdate': _birthdateController.text,
-          'isConnected': false, // 초기 연결 상태
+    // form 검증 후 회원가입 로직 진행
+    if (_formKey.currentState?.validate() ?? false) {
+      // 아이디 중복 검사
+      if (await isIdDuplicate(id)) {
+        setState(() {
+          _idError = "이미 존재하는 아이디입니다.";
         });
-
-        print("회원가입 성공");
-        Navigator.pop(context); // 회원가입 완료 후 닫기
+        return;
       }
-    } catch (e) {
-      print("회원가입 실패: $e");
-      _showErrorMessage("회원가입에 실패했습니다.");
+
+      if (await isEmailDuplicate(email)) {
+        setState(() {
+          _emailError = "이미 존재하는 이메일입니다.";
+        });
+        return;
+      }
+
+      try {
+        // Firebase Auth로 사용자 등록
+        UserCredential userCredential =
+            await _auth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+
+        if (userCredential.user != null) {
+          // Firestore에 사용자 정보 저장
+          await _firestore
+              .collection('users')
+              .doc(userCredential.user!.uid)
+              .set({
+            'id': id,
+            'email': email,
+            'birthdate': _birthdateController.text,
+            'isConnected': false, // 초기 연결 상태
+          });
+
+          print("회원가입 성공");
+          Navigator.pop(context); // 회원가입 완료 후 닫기
+        }
+      } catch (e) {
+        print("회원가입 실패: $e");
+        _showErrorMessage("회원가입에 실패했습니다.");
+      }
     }
+  }
+
+  // 이메일 중복 검사
+  Future<bool> isEmailDuplicate(String email) async {
+    final QuerySnapshot result = await _firestore
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+    return result.docs.isNotEmpty;
+  }
+
+  // 아이디 중복 검사
+  Future<bool> isIdDuplicate(String id) async {
+    final QuerySnapshot result =
+        await _firestore.collection('users').where('id', isEqualTo: id).get();
+    return result.docs.isNotEmpty;
   }
 
   void _cupertinoDatePicker(BuildContext context) {
@@ -328,7 +366,7 @@ class _JoinBottomSheetState extends State<JoinBottomSheet> {
                   ),
                   onPressed: () {
                     _birthdateController.text =
-                    "${_selectedDate?.year}/${_selectedDate?.month}/${_selectedDate?.day}";
+                        "${_selectedDate?.year}/${_selectedDate?.month}/${_selectedDate?.day}";
 
                     setState(() {
                       _updateFormValidity();
