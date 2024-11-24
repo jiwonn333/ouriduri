@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/login.dart';
+import 'package:ouriduri_couple_app/start_scrren.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -41,7 +41,7 @@ class _SettingScreenState extends State<SettingScreen> {
       // 로그아웃 후 로그인 화면으로 이동하고 이전 화면 제거
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
+        MaterialPageRoute(builder: (context) => StartScreen()),
         // LoginPage를 임포트한 후 사용
         (route) => false,
       );
