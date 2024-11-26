@@ -6,6 +6,7 @@ import 'package:ouriduri_couple_app/validate.dart';
 import 'app_colors.dart';
 import 'connect_page.dart';
 import 'home.dart';
+import 'login/reset_password_screen.dart';
 
 class LoginBottomSheet extends StatefulWidget {
   const LoginBottomSheet({super.key});
@@ -80,7 +81,10 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                       // 비밀번호 분실
                       GestureDetector(
                         onTap: () {
-                          // 비밀번호 분실 처리 로직
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ResetPasswordScreen()),
+                          );
                         },
                         child: const Align(
                           alignment: Alignment.center,
