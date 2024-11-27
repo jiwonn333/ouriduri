@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/join_bottom_sheeet.dart';
+import 'package:ouriduri_couple_app/screens/onboarding/sign_up_bottom_sheeet.dart';
 import 'package:ouriduri_couple_app/webview_page.dart';
 
-import 'app_colors.dart';
+import '../../utils/app_colors.dart';
 
-class TermsAgreementBottomSheet extends StatefulWidget {
+class TermsBottomSheet extends StatefulWidget {
+  const TermsBottomSheet({super.key});
+
   @override
-  _TermsAgreementBottomSheetState createState() =>
-      _TermsAgreementBottomSheetState();
+  _TermsBottomSheetState createState() =>
+      _TermsBottomSheetState();
 }
 
-class _TermsAgreementBottomSheetState extends State<TermsAgreementBottomSheet> {
+class _TermsBottomSheetState extends State<TermsBottomSheet> {
   bool allChecked = false;
   bool termsChecked = false;
   bool privacyChecked = false;
@@ -168,7 +170,7 @@ class _TermsAgreementBottomSheetState extends State<TermsAgreementBottomSheet> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
-                          builder: (context) => JoinBottomSheet());
+                          builder: (context) => SignUpBottomSheet());
                     }
                   : null,
               style: ElevatedButton.styleFrom(

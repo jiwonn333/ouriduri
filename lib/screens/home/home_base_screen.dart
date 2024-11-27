@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:ouriduri_couple_app/date_setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../app_colors.dart';
+import '../../utils/app_colors.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeBaseScreen extends StatefulWidget {
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeBaseScreen> createState() => _HomeBaseScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeBaseScreenState extends State<HomeBaseScreen> {
   DateTime? startDate;
 
   @override

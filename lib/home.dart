@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/bottom_navigation/calendar_screen.dart';
-import 'package:ouriduri_couple_app/bottom_navigation/home_screen.dart';
-import 'package:ouriduri_couple_app/bottom_navigation/list_screen.dart';
-import 'package:ouriduri_couple_app/bottom_navigation/setting_screen.dart';
+import 'package:ouriduri_couple_app/screens/home/calendar_screen.dart';
+import 'package:ouriduri_couple_app/screens/home/home_base_screen.dart';
+import 'package:ouriduri_couple_app/screens/home/list_screen.dart';
+import 'package:ouriduri_couple_app/screens/home/settings_screen.dart';
 
-import 'app_colors.dart';
+import 'utils/app_colors.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,10 +18,10 @@ class _HomePageState extends State<HomePage> {
 
   // 각 탭에 연결될 화면 리스트
   final List<Widget> _pages = <Widget>[
-    HomeScreen(),
+    HomeBaseScreen(),
     CalendarScreen(),
     ListScreen(),
-    SettingScreen(),
+    SettingsScreen(),
   ];
 
   void _onItemTapped(int index) {

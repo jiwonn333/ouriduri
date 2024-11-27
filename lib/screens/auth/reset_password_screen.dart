@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:ouriduri_couple_app/widgets/custom_app_bar.dart';
 
-import '../app_colors.dart';
-import '../service/auth_service.dart';
+import '../../utils/app_colors.dart';
+import '../../services/auth_service.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
 
   final AuthService authService = AuthService();
 
+  ResetPasswordScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-          title: const Text(
-        "비밀번호 재설정",
-        style: TextStyle(
-          fontSize: 24.0,
-          fontWeight: FontWeight.bold,
-        ),
-      )),
+      appBar: const CustomAppBar(title: "비밀번호 재설정", bgColor: Colors.white),
       body: Padding(
         padding: const EdgeInsets.symmetric(
             horizontal: 24.0, vertical: 16.0),

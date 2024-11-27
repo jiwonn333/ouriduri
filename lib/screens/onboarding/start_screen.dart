@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/login_bottomsheet.dart';
-import 'package:ouriduri_couple_app/terms_agreement_bottomsheet.dart';
+import 'package:ouriduri_couple_app/screens/auth/login_bottom_sheet.dart';
+import 'package:ouriduri_couple_app/screens/onboarding/terms_bottom_sheet.dart';
 
-import 'app_colors.dart';
+import '../../utils/app_colors.dart';
 
 class StartScreen extends StatefulWidget {
+  const StartScreen({super.key});
+
   @override
   _StartScreenState createState() => _StartScreenState();
 }
@@ -18,7 +20,7 @@ class _StartScreenState extends State<StartScreen> {
         body: Center(
           child: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(20.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -112,7 +114,7 @@ class _StartScreenState extends State<StartScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
-      builder: (context) => TermsAgreementBottomSheet(),
+      builder: (context) => TermsBottomSheet(),
     );
   }
 

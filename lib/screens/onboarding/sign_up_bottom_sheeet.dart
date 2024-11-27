@@ -1,19 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/validate.dart';
+import 'package:ouriduri_couple_app/services/auth_service.dart';
+import 'package:ouriduri_couple_app/services/firestore_service.dart';
+import 'package:ouriduri_couple_app/utils/validation_utils.dart';
 
-import 'app_colors.dart';
+import '../../utils/app_colors.dart';
 
-class JoinBottomSheet extends StatefulWidget {
-  const JoinBottomSheet({super.key});
+class SignUpBottomSheet extends StatefulWidget {
+  const SignUpBottomSheet({super.key});
 
   @override
-  State<JoinBottomSheet> createState() => _JoinBottomSheetState();
+  State<SignUpBottomSheet> createState() => _SignUpBottomSheetState();
 }
 
-class _JoinBottomSheetState extends State<JoinBottomSheet> {
+class _SignUpBottomSheetState extends State<SignUpBottomSheet> {
   final _formKey = GlobalKey<FormState>();
 
   // 실시간 에러 메시지 저장
@@ -33,8 +33,11 @@ class _JoinBottomSheetState extends State<JoinBottomSheet> {
   final TextEditingController _birthdateController = TextEditingController();
 
   // Firebase Auth, Firestore
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // final FirebaseAuth _auth = FirebaseAuth.instance;
+  // final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  final AuthService _authService = AuthService();
+  final FireStoreService _fireStoreService = FireStoreService();
 
   // 생년월일 기본 값 설정
   DateTime? _selectedDate = DateTime(2000, 1, 1);
@@ -121,7 +124,7 @@ class _JoinBottomSheetState extends State<JoinBottomSheet> {
           _buildTextField(
               controller: _passwordController,
               hintText: "비밀번호",
-              icon: Icon(Icons.lock),
+              icon: const Icon(Icons.lock),
               obscureText: true,
               validator: (value) {
                 _passwordError =
@@ -132,7 +135,7 @@ class _JoinBottomSheetState extends State<JoinBottomSheet> {
           _buildTextField(
               controller: _confirmPasswordController,
               hintText: "비밀번호 확인",
-              icon: Icon(Icons.lock_outline),
+              icon: const Icon(Icons.lock_outline),
               obscureText: true,
               validator: (value) {
                 _passwordConfirmError = JoinValidate()
@@ -154,7 +157,7 @@ class _JoinBottomSheetState extends State<JoinBottomSheet> {
 
           // 회원가입 버튼
           ElevatedButton(
-            onPressed: _isFormValid ? _register : null,
+            onPressed: _isFormValid ? _signUp : null,
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(360, 50),
               backgroundColor: _isFormValid ? AppColors.primaryPink : null,
@@ -259,72 +262,35 @@ class _JoinBottomSheetState extends State<JoinBottomSheet> {
     );
   }
 
-  Future<void> _register() async {
+  Future<void> _signUp() async {
     String id = _idController.text.trim();
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
     // form 검증 후 회원가입 로직 진행
     if (_formKey.currentState?.validate() ?? false) {
-      // 아이디 중복 검사
-      if (await isIdDuplicate(id)) {
+      if (await _fireStoreService.isIdDuplicate(id)) {
         setState(() {
           _idError = "이미 존재하는 아이디입니다.";
         });
         return;
       }
 
-      if (await isEmailDuplicate(email)) {
+      if (await _fireStoreService.isEmailDuplicate(email)) {
         setState(() {
           _emailError = "이미 존재하는 이메일입니다.";
         });
         return;
       }
 
-      try {
-        // Firebase Auth로 사용자 등록
-        UserCredential userCredential =
-            await _auth.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-
-        if (userCredential.user != null) {
-          // Firestore에 사용자 정보 저장
-          await _firestore
-              .collection('users')
-              .doc(userCredential.user!.uid)
-              .set({
-            'id': id,
-            'email': email,
-            'birthdate': _birthdateController.text,
-            'isConnected': false, // 초기 연결 상태
-          });
-
-          print("회원가입 성공");
-          Navigator.pop(context); // 회원가입 완료 후 닫기
-        }
-      } catch (e) {
-        print("회원가입 실패: $e");
-        _showErrorMessage("회원가입에 실패했습니다.");
+      final user = await _authService.signUp(email, password);
+      if (user != null) {
+        _fireStoreService.saveUserData(
+            user.uid, id, email, _birthdateController.text);
+        Navigator.pop(context); // 회원가입 완료 후 닫기
       }
+      _showErrorMessage("회원가입에 실패했습니다.");
     }
-  }
-
-  // 이메일 중복 검사
-  Future<bool> isEmailDuplicate(String email) async {
-    final QuerySnapshot result = await _firestore
-        .collection('users')
-        .where('email', isEqualTo: email)
-        .get();
-    return result.docs.isNotEmpty;
-  }
-
-  // 아이디 중복 검사
-  Future<bool> isIdDuplicate(String id) async {
-    final QuerySnapshot result =
-        await _firestore.collection('users').where('id', isEqualTo: id).get();
-    return result.docs.isNotEmpty;
   }
 
   void _cupertinoDatePicker(BuildContext context) {

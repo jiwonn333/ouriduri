@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ouriduri_couple_app/connect_page.dart';
 import 'package:ouriduri_couple_app/home.dart';
-import 'package:ouriduri_couple_app/validate.dart';
+import 'package:ouriduri_couple_app/utils/validation_utils.dart';
 import 'package:ouriduri_couple_app/webview_page.dart';
 
-import 'app_colors.dart';
+import 'utils/app_colors.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

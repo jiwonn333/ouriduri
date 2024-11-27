@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/validate.dart';
+import 'package:ouriduri_couple_app/utils/validation_utils.dart';
 
-import 'app_colors.dart';
+import 'utils/app_colors.dart';
 
 class JoinPage extends StatefulWidget {
   @override

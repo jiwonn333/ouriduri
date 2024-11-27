@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/app_colors.dart';
+import 'package:ouriduri_couple_app/utils/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DateSettingPage extends StatefulWidget {

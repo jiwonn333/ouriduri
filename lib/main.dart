@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:ouriduri_couple_app/app_colors.dart';
-import 'package:ouriduri_couple_app/firebase_options.dart';
+import 'package:ouriduri_couple_app/utils/app_colors.dart';
+import 'package:ouriduri_couple_app/services/firebase_options.dart';
 import 'package:ouriduri_couple_app/home.dart';
-import 'package:ouriduri_couple_app/start_scrren.dart';
+import 'package:ouriduri_couple_app/screens/onboarding/start_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,7 +62,6 @@ class MainPage extends StatelessWidget {
 
   Future<bool> checkUserLoggedIn() async {
     User? currentUser = FirebaseAuth.instance.currentUser;
-
     try {
       await currentUser?.reload(); // 사용자 세션 갱신
       currentUser = FirebaseAuth.instance.currentUser;
