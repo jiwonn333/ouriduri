@@ -164,7 +164,7 @@ class _JoinPageState extends State<JoinPage> {
             decoration: _inputDecoration("비밀번호 확인", Icon(Icons.lock_outline)),
             obscureText: true,
             validator: (value) => JoinValidate()
-                .validatePasswordConfirm(value, _passwordController),
+                .validatePasswordConfirm(value, _passwordController.text),
           ),
           const SizedBox(height: 10),
 
