@@ -1,11 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/date_setting.dart';
+import 'package:ouriduri_couple_app/ui/navigation/date_setting_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/app_colors.dart';
+import 'date_setting_screen.dart';
 
 class HomeBaseScreen extends StatefulWidget {
+  const HomeBaseScreen({super.key});
+
   @override
   State<HomeBaseScreen> createState() => _HomeBaseScreenState();
 }
@@ -40,6 +43,7 @@ class _HomeBaseScreenState extends State<HomeBaseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: _buildHeader(),
       ),
@@ -55,7 +59,7 @@ class _HomeBaseScreenState extends State<HomeBaseScreen> {
   Widget _buildHeader() {
     int loveDays = startDate != null ? calculateLoveDays(startDate!) : 0;
 
-    return Container(
+    return SizedBox(
       height: 150,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -88,10 +92,12 @@ class _HomeBaseScreenState extends State<HomeBaseScreen> {
 
           // 2. 아이콘
           IconButton(
-            icon: Icon(Icons.keyboard_arrow_right_rounded),
+            icon: const Icon(Icons.keyboard_arrow_right_rounded),
             onPressed: () async {
-              final selectedDate = await Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => DateSettingPage()));
+              final selectedDate = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const DateSettingPage()));
               if (selectedDate != null) {
                 setState(() {
                   startDate = selectedDate;

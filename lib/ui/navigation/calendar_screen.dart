@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ouriduri_couple_app/widgets/custom_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -29,7 +30,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: const CustomAppBar(title: "Calendar", bgColor: Colors.transparent),
       body: Column(
         children: [
           _buildCalendar(),
@@ -38,16 +39,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
         ],
       ),
       floatingActionButton: _floatingActionButton(),
-    );
-  }
-
-  AppBar _buildAppBar() {
-    return AppBar(
-      title: const Text('Calendar'),
-      titleTextStyle: const TextStyle(
-          fontSize: 28, fontFamily: 'Ouriduri', color: Colors.black),
-      backgroundColor: Colors.transparent,
-      elevation: 0,
     );
   }
 

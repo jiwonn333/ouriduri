@@ -1,28 +1,29 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ouriduri_couple_app/interface/signin_listener.dart';
 import 'package:ouriduri_couple_app/services/firestore_service.dart';
-import 'package:ouriduri_couple_app/utils/validation_utils.dart';
+import 'package:ouriduri_couple_app/ui/signin/signin_screen_viewmodel.dart';
+import 'package:ouriduri_couple_app/widgets/custom_dialog.dart';
+import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
+import 'package:ouriduri_couple_app/widgets/custom_text_form_field.dart';
 
-import '../../connect_page.dart';
-import '../../home.dart';
 import '../../services/auth_service.dart';
 import '../../utils/app_colors.dart';
 import 'reset_password_screen.dart';
 
-class LoginBottomSheet extends StatefulWidget {
-  const LoginBottomSheet({super.key});
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({super.key});
 
   @override
-  State<LoginBottomSheet> createState() => _LoginBottomSheetState();
+  State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _LoginBottomSheetState extends State<LoginBottomSheet> {
+class _SignInScreenState extends State<SignInScreen> implements SignInListener {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  final AuthService _authService = AuthService();
-  final FireStoreService _fireStoreService = FireStoreService();
+  final SignInScreenViewModel _viewModel = SignInScreenViewModel(
+      authService: AuthService(), fireStoreService: FireStoreService());
 
   @override
   Widget build(BuildContext context) {
@@ -62,23 +63,22 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                       ),
 
                       const SizedBox(height: 24.0),
-
-                      // 아이디 입력필드
-                      TextFormField(
+                      // id
+                      CustomTextFormField(
                         controller: _idController,
-                        decoration: _inputDecoration("아이디", Icon(Icons.person)),
-                        validator: (value) => JoinValidate().validateId(value),
+                        hintText: "아이디",
+                        icon: const Icon(Icons.person),
+                        obscureText: false,
+                        validator: (value) {},
                       ),
                       const SizedBox(height: 16.0),
-                      // 비밀번호 입력 필드
-                      TextFormField(
+                      // pw
+                      CustomTextFormField(
                         controller: _passwordController,
-                        decoration: _inputDecoration("비밀번호", Icon(Icons.key)),
+                        hintText: "비밀번호",
+                        icon: const Icon(Icons.key),
                         obscureText: true,
-                        validator: (value) =>
-                            JoinValidate()
-                                .validatePassword(value, _idController.text
-                                .trim()),
+                        validator: (value) {},
                       ),
 
                       const SizedBox(height: 16.0),
@@ -105,24 +105,12 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
 
                       const SizedBox(height: 24.0),
                       // 로그인 버튼
-                      ElevatedButton(
-                        onPressed: _signIn,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryPink,
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        child: const Text(
-                          '로그인',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                      CustomElevatedButton(
+                          isValidated: true,
+                          onPressed: () {
+                            _viewModel.signIn(_idController.text, _passwordController.text, this);
+                          },
+                          btnText: "로그인"),
                       const SizedBox(height: 16.0),
                     ],
                   ),
@@ -146,44 +134,50 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
     );
   }
 
-  Future<void> _signIn() async {
-    String? email = await _fireStoreService.getEmailFromUserId(
-        _idController.text);
-
-    if (email != null) {
-      try {
-        final user = await _authService.signIn(email, _passwordController.text);
-        if (user != null) {
-          // bool isConnected = await _checkConnection(userCredential.user!.uid);
-          // if (isConnected) {
-          //   Navigator.pushReplacement(context,
-          //       MaterialPageRoute(builder: (context) => const HomePage()));
-          // } else {
-          //   Navigator.pushReplacement(context,
-          //       MaterialPageRoute(builder: (context) => const ConnectPage()));
-          // }
-          print("로그인 성공");
-        }
-      } catch (e) {
-        print("로그인실패: $e");
-      }
-    }
-  }
-
-  InputDecoration _inputDecoration(String hintText, Icon icon) {
-    return InputDecoration(
-      hintText: hintText,
-      border: _outlineInputBorder(),
-      fillColor: Colors.grey.withOpacity(0.1),
-      filled: true,
-      prefixIcon: icon,
+  @override
+  void onLoginFailed() {
+    // 로그인 실패 시 사용자에게 알림
+    showCupertinoDialog(
+      context: context,
+      builder: (context) => const CustomDialog("아이디 또는 비밀번호가 일치하지 않습니다."),
     );
   }
 
-  OutlineInputBorder _outlineInputBorder() {
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: BorderSide.none,
+  @override
+  void onLoginSuccess() {
+    // 로그인 성공 시 홈으로 이동
+    print("로그인 성공");
+    // bool isConnected = await _checkConnection(userCredential.user!.uid);
+    // if (isConnected) {
+    //   Navigator.pushReplacement(context,
+    //       MaterialPageRoute(builder: (context) => const HomePage()));
+    // } else {
+    //   Navigator.pushReplacement(context,
+    //       MaterialPageRoute(builder: (context) => const ConnectPage()));
+    // }
+
+    // Navigator.pushReplacement(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => const HomePage()),
+    // );
+  }
+
+  @override
+  void onNoRegisterEmail() {
+    // 이메일 미등록 시 사용자에게 알림
+    showCupertinoDialog(
+      context: context,
+      builder: (context) =>
+          const CustomDialog("등록된 이메일이 없습니다. \n 회원가입을 먼저 진행해 주세요."),
+    );
+  }
+
+  @override
+  void onValidationError() {
+    // 유효성 검사 실패 시 사용자에게 알림을 표시
+    showCupertinoDialog(
+      context: context,
+      builder: (context) => const CustomDialog("아이디 또는 비밀번호가 잘못되었습니다."),
     );
   }
 }

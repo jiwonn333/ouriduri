@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ouriduri_couple_app/connect_page.dart';
-import 'package:ouriduri_couple_app/home.dart';
+import 'package:ouriduri_couple_app/ui/intro/home_screen.dart';
 import 'package:ouriduri_couple_app/utils/validation_utils.dart';
 import 'package:ouriduri_couple_app/webview_page.dart';
 
@@ -229,7 +229,7 @@ class _LoginPageState extends State<LoginPage> {
 
           if (isConnected) {
             Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const HomePage()));
+                MaterialPageRoute(builder: (context) => const HomeScreen()));
           } else {
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => const ConnectPage()));

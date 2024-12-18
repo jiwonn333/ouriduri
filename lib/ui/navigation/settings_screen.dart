@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/screens/onboarding/start_screen.dart';
+import 'package:ouriduri_couple_app/ui/intro/start_screen.dart';
 import 'package:ouriduri_couple_app/services/auth_service.dart';
 
 class SettingsScreen extends StatefulWidget {

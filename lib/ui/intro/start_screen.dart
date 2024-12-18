@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/screens/auth/login_bottom_sheet.dart';
-import 'package:ouriduri_couple_app/screens/onboarding/terms_bottom_sheet.dart';
+import 'package:ouriduri_couple_app/ui/signup/terms_bottom_sheet.dart';
+import 'package:ouriduri_couple_app/ui/signin/signin_screen.dart';
 
 import '../../utils/app_colors.dart';
+/**
+ * UI 담당
+ * 오직 화면만 그림
+ */
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
@@ -114,7 +118,7 @@ class _StartScreenState extends State<StartScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
-      builder: (context) => TermsBottomSheet(),
+      builder: (context) => const TermsBottomSheet(),
     );
   }
 
@@ -125,7 +129,7 @@ class _StartScreenState extends State<StartScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
-      builder: (context) => LoginBottomSheet(),
+      builder: (context) => const SignInScreen(),
     );
   }
 }

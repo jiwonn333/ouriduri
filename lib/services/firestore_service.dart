@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class FireStoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -32,8 +31,7 @@ class FireStoreService {
       if (result.docs.isNotEmpty) {
         return result.docs.first['email']; // 이메일 반환
       } else {
-        print('아이디가 존재하지 않음');
-        return null;
+        return null; // 아이디가 존재하지 않음
       }
     } catch (e) {
       print("이메일 찾기 실패: $e");

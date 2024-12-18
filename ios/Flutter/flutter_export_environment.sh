@@ -3,7 +3,7 @@
 export "FLUTTER_ROOT=/Users/shinjiwon/development/flutter"
 export "FLUTTER_APPLICATION_PATH=/Users/shinjiwon/AndroidStudioProjects/ouriduri"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
-export "FLUTTER_TARGET=/Users/shinjiwon/AndroidStudioProjects/ouriduri/lib/main.dart"
+export "FLUTTER_TARGET=/Users/shinjiwon/AndroidStudioProjects/ouriduri/lib/ui/main.dart"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"
 export "FLUTTER_BUILD_NUMBER=1"

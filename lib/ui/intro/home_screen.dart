@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/screens/home/calendar_screen.dart';
-import 'package:ouriduri_couple_app/screens/home/home_base_screen.dart';
-import 'package:ouriduri_couple_app/screens/home/list_screen.dart';
-import 'package:ouriduri_couple_app/screens/home/settings_screen.dart';
+import 'package:ouriduri_couple_app/ui/navigation/calendar_screen.dart';
+import 'package:ouriduri_couple_app/ui/navigation/home_base_screen.dart';
+import 'package:ouriduri_couple_app/ui/navigation/list_screen.dart';
+import 'package:ouriduri_couple_app/ui/navigation/settings_screen.dart';
 
-import 'utils/app_colors.dart';
+import '../../utils/app_colors.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   // 각 탭에 연결될 화면 리스트
   final List<Widget> _pages = <Widget>[
-    HomeBaseScreen(),
-    CalendarScreen(),
-    ListScreen(),
-    SettingsScreen(),
+    const HomeBaseScreen(),
+    const CalendarScreen(),
+    const ListScreen(),
+    const SettingsScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -35,12 +35,13 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: _pages[_selectedIndex],
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: AppColors.dividerLineColor, width: 1)),
+        decoration: const BoxDecoration(
+          border: Border(
+              top: BorderSide(color: AppColors.dividerLineColor, width: 1)),
         ),
         child: BottomNavigationBar(
           backgroundColor: AppColors.primaryBackgroundColor,
-          items: <BottomNavigationBarItem>[
+          items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
             BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_month), label: ''),

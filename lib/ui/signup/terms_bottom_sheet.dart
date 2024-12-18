@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/screens/onboarding/sign_up_bottom_sheeet.dart';
+import 'package:ouriduri_couple_app/ui/signup/signup_screen.dart';
 import 'package:ouriduri_couple_app/webview_page.dart';
+import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
 
 import '../../utils/app_colors.dart';
 
@@ -8,8 +9,7 @@ class TermsBottomSheet extends StatefulWidget {
   const TermsBottomSheet({super.key});
 
   @override
-  _TermsBottomSheetState createState() =>
-      _TermsBottomSheetState();
+  _TermsBottomSheetState createState() => _TermsBottomSheetState();
 }
 
 class _TermsBottomSheetState extends State<TermsBottomSheet> {
@@ -127,7 +127,7 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                 ],
               ),
             ),
-            const Divider(),
+            const Divider(color: Colors.grey),
             _buildCheckBoxTile(
               value: termsChecked,
               label: '이용약관 동의',
@@ -160,35 +160,19 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
               },
               onChanged: (value) => _updateIndividualCheck(value, 'privacy'),
             ),
-            ElevatedButton(
-              onPressed: allChecked
-                  ? () {
-                      Navigator.pop(context); // 현재 BottomSheet를 닫음
-                      showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          builder: (context) => SignUpBottomSheet());
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(360, 50), // 버튼의 최소 크기 설정 (너비 x 높이)
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 32.0, vertical: 12.0), // 버튼 내부 여백 설정
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0), // 버튼 모서리 둥글게 설정
-                ),
-                backgroundColor: AppColors.primaryPink,
-              ),
-              child: const Text(
-                '동의하고 계속하기',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
+            CustomElevatedButton(
+              isValidated: allChecked,
+              onPressed: () {
+                Navigator.pop(context); // 현재 BottomSheet를 닫음
+                showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    builder: (context) => const SignUpScreen());
+              },
+              btnText: "동의하고 계속하기",
             ),
           ],
         ),

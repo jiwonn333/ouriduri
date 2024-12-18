@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../screens/onboarding/start_screen.dart';
+import '../ui/intro/start_screen.dart';
 
 /**
  * Firebase와 같은 외부 서비스와의 연동을 처리하는 로직을 포함
@@ -79,4 +79,11 @@ class AuthService {
       print("에러 발생: $e");
     }
   }
+
+  // UID
+  Future<String?> getUID() async {
+    final User? user = _auth.currentUser;
+    return user?.uid;
+  }
+
 }
