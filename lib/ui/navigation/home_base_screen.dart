@@ -2,9 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ouriduri_couple_app/ui/navigation/date_setting_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../utils/app_colors.dart';
-import 'date_setting_screen.dart';
 
 class HomeBaseScreen extends StatefulWidget {
   const HomeBaseScreen({super.key});
