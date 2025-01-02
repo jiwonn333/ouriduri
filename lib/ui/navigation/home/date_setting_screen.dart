@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/ui/navigation/date_setting_viewmodel.dart';
+import 'package:ouriduri_couple_app/ui/navigation/home/date_setting_viewmodel.dart';
 import 'package:ouriduri_couple_app/utils/app_colors.dart';
 import 'package:ouriduri_couple_app/widgets/custom_app_bar.dart';
 import 'package:ouriduri_couple_app/widgets/custom_date_picker.dart';
