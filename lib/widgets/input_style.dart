@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 InputDecoration buildInputDecoration(String hintText, Icon icon) {
   return InputDecoration(
     hintText: hintText,
-    hintStyle: const TextStyle(color: Colors.black54),
+    hintStyle: const TextStyle(color: Colors.black54, fontSize: 14),
     border: outlineInputBorder(),
     fillColor: Colors.grey.withOpacity(0.1),
     filled: true,

@@ -55,7 +55,7 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                 text: '[필수] ',
                 style: const TextStyle(
                   color: AppColors.primaryDarkPink,
-                  fontSize: 19,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Ouriduri',
                 ),
@@ -64,7 +64,7 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                     text: label,
                     style: const TextStyle(
                       color: Colors.black,
-                      fontSize: 19,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Ouriduri',
                     ),
@@ -103,7 +103,7 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
             const SizedBox(height: 16.0),
             const Text(
               '이용약관에 동의해 주세요',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16.0),
             CheckboxListTile(
@@ -118,7 +118,7 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                       "모두 동의합니다.",
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Ouriduri',
                       ),

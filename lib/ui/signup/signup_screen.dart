@@ -99,7 +99,7 @@ class _SignUpScreenState extends State<SignUpScreen> implements SignUpListener {
             child: Text(
               '계정 등록',
               style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.black),
             ),

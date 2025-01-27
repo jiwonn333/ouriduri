@@ -97,14 +97,13 @@ class _StartScreenState extends State<StartScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        minimumSize: const Size(230, 45),
+        minimumSize: const Size(230, 46),
       ),
       child: Text(
         label,
         style: TextStyle(
-          fontSize: 24,
+          fontSize: 18,
           fontWeight: FontWeight.bold,
-          fontFamily: 'Ouriduri',
           color: textColor,
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ouriduri_couple_app/utils/app_colors.dart';
 import 'package:ouriduri_couple_app/widgets/input_style.dart';
 
 class CustomTextFormField extends StatelessWidget {
@@ -26,6 +27,7 @@ class CustomTextFormField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextFormField(
+          cursorColor: Colors.blue,
           controller: controller,
           decoration: buildInputDecoration(hintText, icon),
           keyboardType: keyboardType,

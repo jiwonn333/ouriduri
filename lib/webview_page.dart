@@ -40,7 +40,8 @@ class _WebViewPageState extends State<WebViewPage> {
         backgroundColor: Colors.white,
         title: Text(
           widget.appBarTitle,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+          style: const TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black),

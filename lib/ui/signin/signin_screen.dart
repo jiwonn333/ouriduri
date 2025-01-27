@@ -56,7 +56,7 @@ class _SignInScreenState extends State<SignInScreen> implements SignInListener {
                         child: Text(
                           '로그인',
                           style: TextStyle(
-                              fontSize: 28,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Colors.black),
                         ),
@@ -97,7 +97,7 @@ class _SignInScreenState extends State<SignInScreen> implements SignInListener {
                             '비밀번호를 분실하셨나요?',
                             style: TextStyle(
                                 color: AppColors.primaryDarkPink,
-                                fontSize: 18.0,
+                                fontSize: 14.0,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
