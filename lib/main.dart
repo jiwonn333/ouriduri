@@ -1,9 +1,15 @@
+import 'dart:convert';
+
+import 'package:device_preview/device_preview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
 import 'package:ouriduri_couple_app/services/firebase_options.dart';
+import 'package:ouriduri_couple_app/ui/connect/connect_screen.dart';
 import 'package:ouriduri_couple_app/ui/intro/home_screen.dart';
 import 'package:ouriduri_couple_app/ui/intro/start_screen.dart';
 import 'package:ouriduri_couple_app/utils/app_colors.dart';
@@ -13,14 +19,29 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MainPage());
+
+  await dotenv.load(fileName: "assets/env/.env");
+  KakaoSdk.init(nativeAppKey: dotenv.env['KAKAO_APP_KEY']!);
+
+  // runApp(const MainPage());
+  runApp(
+    DevicePreview(
+      enabled: true,
+      builder: (context) => MaterialApp(
+        useInheritedMediaQuery: true,
+        debugShowCheckedModeBanner: false,
+        locale: DevicePreview.locale(context),
+        builder: DevicePreview.appBuilder,
+        home: const ConnectScreen(),
+      ),
+    ),
+  );
 }
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
 
   @override
-
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
@@ -88,5 +109,11 @@ class MainPage extends StatelessWidget {
       await FirebaseAuth.instance.signOut();
       return false;
     }
+  }
+
+  Future<String> getAppKey() async {
+    // iOS에서는 Info.plist에서 직접 값을 가져오는 방식
+    final String appKey = await rootBundle.loadString("Info.plist");
+    return jsonDecode(appKey)['KAKAO_APP_KEY'];
   }
 }

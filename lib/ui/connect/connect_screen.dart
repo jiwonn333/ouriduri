@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
+import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
 import 'package:ouriduri_couple_app/widgets/custom_app_bar.dart';
 
 import '../../utils/app_colors.dart';
@@ -13,12 +15,13 @@ class ConnectScreen extends StatefulWidget {
 }
 
 class _ConnectScreenState extends State<ConnectScreen> {
-
   @override
   void initState() {
     super.initState();
     _inviteCode = generateRandomCode(); // 랜덤 코드 생성
+    initDeepLinkListener();
   }
+
   String _inviteCode = '';
 
   // 랜덤 코드 생성 메서드
@@ -63,16 +66,18 @@ class _ConnectScreenState extends State<ConnectScreen> {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 20),
-          Center(
-            child: Text(
-              "초대 코드: $_inviteCode",
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+        Center(
+          child: Text(
+            "초대 코드: $_inviteCode",
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
+        ),
         const SizedBox(height: 20),
         Center(
           child: ElevatedButton(
-            onPressed: (){},
+            onPressed: () {
+              _shareToKakaoTalk();
+            },
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(240, 46),
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -126,5 +131,66 @@ class _ConnectScreenState extends State<ConnectScreen> {
         ),
       ],
     );
+  }
+
+  // 카카오톡 공유
+  Future<void> _shareToKakaoTalk() async {
+    try {
+      bool isKakaoTalkSharingAvailable =
+          await ShareClient.instance.isKakaoTalkSharingAvailable();
+      // User user = await UserApi.instance.me();
+      // final name = user.kakaoAccount?.profile?.nickname;
+
+      final template = _createTextTemplate('test');
+
+      if (isKakaoTalkSharingAvailable) {
+        final uri = await ShareClient.instance.shareDefault(template: template);
+        await ShareClient.instance.launchKakaoTalk(uri);
+        print('카카오톡 공유 완료');
+      } else {
+        final shareUrl =
+            await WebSharerClient.instance.makeDefaultUrl(template: template);
+        await launchBrowserTab(shareUrl, popupOpen: true);
+        print('카카오톡 설치되지 않음, 웹 공유');
+      }
+    } catch (error) {
+      print('카카오톡 공유 실패: $error');
+    }
+  }
+
+  // 공유 템플릿 생성
+  TextTemplate _createTextTemplate(String inviterName) {
+    String inviteLink =
+        'superouriduri://ouriduri/connect_screen?invite_code=$_inviteCode';
+    String fallbackUrl =
+        'https://ouriduri.com/connect_screen?invite_code=$_inviteCode';
+
+    return TextTemplate(
+      text: '$inviterName 님이 당신을 초대했어요!\n앱에서 연결을 진행해주세요.',
+      link: Link(
+        webUrl: Uri.parse(fallbackUrl),
+        // 앱이 없으면 웹으로 이동
+        mobileWebUrl: Uri.parse(fallbackUrl),
+        androidExecutionParams: {'invite_code': _inviteCode},
+        // Android 앱에서 실행할 딥링크
+        iosExecutionParams: {'invite_code': _inviteCode}, // iOS 앱에서 실행할 딥링크
+      ),
+    );
+  }
+
+  // 딥링크 감지
+  void initDeepLinkListener() {
+    final appLinks = AppLinks();
+
+    appLinks.uriLinkStream.listen((Uri? uri) {
+      print("🔍 딥링크 감지됨: $uri"); // 로그 확인
+
+      if (uri != null && uri.path == '/connect_page') {
+        final inviteCode = uri.queryParameters['invite_code'];
+        print("📌 초대 코드: $inviteCode"); // 초대 코드 값 확인
+
+        Navigator.pushNamed(context, '/connect_page', arguments: inviteCode);
+      }
+    });
   }
 }

@@ -5,12 +5,16 @@ plugins {
     id 'com.google.gms.google-services' // 추가
 }
 
-def localProperties = new Properties()
-def localPropertiesFile = rootProject.file('local.properties')
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader('UTF-8') { reader ->
-        localProperties.load(reader)
-    }
+//def localProperties = new Properties()
+//def localPropertiesFile = rootProject.file('local.properties')
+//if (localPropertiesFile.exists()) {
+//    localPropertiesFile.withReader('UTF-8') { reader ->
+//        localProperties.load(reader)
+//    }
+//}
+// properties 파일 로드
+def properties = Properties().apply {
+    load(FileInputStream(rootProject.file("apikey.properties")))
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -24,7 +28,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.couple.ouriduri.ouriduri_couple_app"
+    namespace "com.couple.ouriduri"
     compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -43,7 +47,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.couple.ouriduri.ouriduri_couple_app"
+        applicationId "com.couple.ouriduri"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion flutter.minSdkVersion
@@ -51,13 +55,18 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
     }
 
     buildTypes {
+        debug {
+            manifestPlaceholders["KAKAO_APP_KEY"] = properties["kakaoAppKey"]
+        }
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
+            manifestPlaceholders["KAKAO_APP_KEY"] = properties["kakaoAppKey"]
         }
     }
 }
