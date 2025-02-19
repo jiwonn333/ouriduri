@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ouriduri_couple_app/ui/signup/signup_screen.dart';
 import 'package:ouriduri_couple_app/webview_page.dart';
 import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
+import 'package:ouriduri_couple_app/widgets/custom_handle_bar.dart';
 
 import '../../utils/app_colors.dart';
 
@@ -100,6 +101,8 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
         ),
         child: Column(
           children: [
+            const SizedBox(height: 16.0),
+            const CustomHandleBar(),
             const SizedBox(height: 16.0),
             const Text(
               '이용약관에 동의해 주세요',

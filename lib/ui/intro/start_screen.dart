@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/ui/signup/terms_bottom_sheet.dart';
 import 'package:ouriduri_couple_app/ui/signin/signin_screen.dart';
+import 'package:ouriduri_couple_app/ui/signup/terms_bottom_sheet.dart';
 
 import '../../utils/app_colors.dart';
-/**
- * UI 담당
- * 오직 화면만 그림
- */
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
@@ -18,25 +14,21 @@ class StartScreen extends StatefulWidget {
 class _StartScreenState extends State<StartScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        body: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildLogo(),
-                  const SizedBox(height: 30),
-                  _buildButtons(),
-                  const SizedBox(height: 40),
-                  _buildFooter(),
-                ],
-              ),
-            ),
-          ),
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: Container(
+        width: double.infinity, // 화면 가로 꽉 채우기
+        height: double.infinity, // 화면 세로 꽉 채우기
+        color: Colors.white, // 기본 배경 색
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center, // 상단 배치
+          children: [
+            _buildLogo(),
+            const SizedBox(height: 30),
+            _buildButtons(),
+            const SizedBox(height: 40),
+            _buildFooter(),
+          ],
         ),
       ),
     );
@@ -54,11 +46,12 @@ class _StartScreenState extends State<StartScreen> {
     return Column(
       children: [
         _buildElevatedButton(
-            label: "시작",
-            onPressed: _showTermsBottomSheet,
-            backgroundColor: Colors.white,
-            borderColor: AppColors.primaryPink,
-            textColor: AppColors.primaryDarkPink),
+          label: "시작",
+          onPressed: _showTermsBottomSheet,
+          backgroundColor: Colors.white,
+          borderColor: AppColors.primaryPink,
+          textColor: AppColors.primaryDarkPink,
+        ),
         const SizedBox(height: 10),
         _buildElevatedButton(
           label: "로그인",

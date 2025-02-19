@@ -16,10 +16,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           statusBarBrightness: Brightness.light),
       backgroundColor: bgColor,
       elevation: 0,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          color: bgColor,
+        ),
+      ),
       title: Text(
         title,
         style: const TextStyle(
-          fontSize: 20.0,
+          fontSize: 18.0,
           fontWeight: FontWeight.bold,
         ),
       ),

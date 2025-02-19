@@ -18,9 +18,14 @@ class SignInScreenViewModel {
       : _authService = authService,
         _fireStoreService = fireStoreService;
 
+  Future<bool> checkedConnection(String uid) async {
+    bool isConnected = await _fireStoreService.checkConnection(uid);
+    return isConnected;
+  }
+
   Future<void> signIn(String id, String pw, SignInListener listener) async {
     // id, pw 유효성 검사
-    if (!_isValidCredentials(id, pw)) {
+    if (!isValidCredentials(id, pw)) {
       listener.onValidationError();
       return;
     }
@@ -46,7 +51,7 @@ class SignInScreenViewModel {
     }
   }
 
-  bool _isValidCredentials(String id, String pw) {
+  bool isValidCredentials(String id, String pw) {
     // 유효성 검증 로직 예시
     if (id.isEmpty || pw.isEmpty || pw.length < 8 || id.contains(' ')) {
       return false;

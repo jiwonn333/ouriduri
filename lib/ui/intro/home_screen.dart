@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ouriduri_couple_app/ui/navigation/calendar_screen.dart';
 import 'package:ouriduri_couple_app/ui/navigation/list_screen.dart';
-import 'package:ouriduri_couple_app/ui/navigation/settings_screen.dart';
+import 'package:ouriduri_couple_app/ui/navigation/setting/settings_screen.dart';
 
 import '../../utils/app_colors.dart';
 import '../navigation/home/home_base_screen.dart';

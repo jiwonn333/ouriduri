@@ -175,7 +175,7 @@ class _SignUpScreenState extends State<SignUpScreen> implements SignUpListener {
             decoration: buildInputDecoration(
                 "생년월일을 선택해주세요", const Icon(Icons.calendar_today)),
             onTap: () {
-              _cupertinoDatePicker(context); // 생년월일 선택
+              _cupertinoDatePicker(context);
             },
             readOnly: true,
           ),
@@ -209,7 +209,7 @@ class _SignUpScreenState extends State<SignUpScreen> implements SignUpListener {
   }
 
   void _cupertinoDatePicker(BuildContext context) {
-    showDialog(
+    showCupertinoDialog(
       context: context,
       builder: (BuildContext context) {
         return Center(
@@ -276,6 +276,10 @@ class _SignUpScreenState extends State<SignUpScreen> implements SignUpListener {
 
   @override
   void onSignUpFailed() {
+    setState(() {
+      _isFormValid = false;
+    });
+
     showCupertinoDialog(
       context: context,
       builder: (context) => const CustomDialog("회원가입에 실패했습니다."),

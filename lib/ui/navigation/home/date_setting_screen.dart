@@ -29,8 +29,9 @@ class _DateSettingScreenState extends State<DateSettingScreen> {
   Widget build(BuildContext context) {
     final viewModel = context.watch<DateSettingViewModel>();
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar:
-          const CustomAppBar(title: "OuriDuri", bgColor: Colors.transparent),
+          const CustomAppBar(title: "OuriDuri", bgColor: Colors.white),
       body: viewModel.isLoading // 로딩 상태 확인
           ? const Center(child: CircularProgressIndicator()) // 로딩 인디케이터 표시
           : Align(
@@ -43,14 +44,14 @@ class _DateSettingScreenState extends State<DateSettingScreen> {
                     const Text(
                       '우리의 기념일',
                       style:
-                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
 
                     Text(
                       viewModel.getFormattedDate(),
                       style: const TextStyle(
-                          fontSize: 30, color: AppColors.primaryPink),
+                          fontSize: 26, color: AppColors.primaryDarkPink, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 15),
 

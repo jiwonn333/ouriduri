@@ -17,11 +17,13 @@ class SignUpScreenViewModel {
     // 아이디 중복 검사
     if (await _fireStoreService.isIdDuplicate(id)) {
       listener.onValidationError("idError");
+      return;
     }
 
     // 이메일 중복 검사
     if (await _fireStoreService.isEmailDuplicate(email)) {
       listener.onValidationError("emailError");
+      return;
     }
 
     // 중복 되어있지 않은 아이디와 이메일인 경우 Firebase Auth 회원가입 요청
@@ -36,7 +38,8 @@ class SignUpScreenViewModel {
         listener.onSignUpFailed();
       }
     } catch (e) {
-      print(e);
+      print("회원가입 중 오류 발생: $e");
+      listener.onSignUpFailed();
     }
   }
 }

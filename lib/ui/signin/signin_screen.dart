@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ouriduri_couple_app/interface/signin_listener.dart';
 import 'package:ouriduri_couple_app/services/firestore_service.dart';
+import 'package:ouriduri_couple_app/ui/connect/request_screen.dart';
+import 'package:ouriduri_couple_app/ui/intro/home_screen.dart';
 import 'package:ouriduri_couple_app/ui/signin/signin_screen_viewmodel.dart';
 import 'package:ouriduri_couple_app/widgets/custom_dialog.dart';
 import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
@@ -108,7 +111,8 @@ class _SignInScreenState extends State<SignInScreen> implements SignInListener {
                       CustomElevatedButton(
                           isValidated: true,
                           onPressed: () {
-                            _viewModel.signIn(_idController.text, _passwordController.text, this);
+                            _viewModel.signIn(_idController.text,
+                                _passwordController.text, this);
                           },
                           btnText: "로그인"),
                       const SizedBox(height: 16.0),
@@ -144,22 +148,28 @@ class _SignInScreenState extends State<SignInScreen> implements SignInListener {
   }
 
   @override
-  void onLoginSuccess() {
-    // 로그인 성공 시 홈으로 이동
+  void onLoginSuccess() async {
     print("로그인 성공");
-    // bool isConnected = await _checkConnection(userCredential.user!.uid);
-    // if (isConnected) {
-    //   Navigator.pushReplacement(context,
-    //       MaterialPageRoute(builder: (context) => const HomePage()));
-    // } else {
-    //   Navigator.pushReplacement(context,
-    //       MaterialPageRoute(builder: (context) => const ConnectPage()));
-    // }
 
-    // Navigator.pushReplacement(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => const HomePage()),
-    // );
+    try {
+      bool isConnected = await _viewModel.checkedConnection(_idController.text);
+
+      if (isConnected) {
+        // 연결된 상태이면 홈 화면으로 이동
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      } else {
+        // 연결되지 않은 상태이면 연결 화면으로 이동
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const RequestScreen()),
+        );
+      }
+    } catch (e) {
+      print("연결 상태 확인 중 오류 발생: $e");
+    }
   }
 
   @override
@@ -179,5 +189,26 @@ class _SignInScreenState extends State<SignInScreen> implements SignInListener {
       context: context,
       builder: (context) => const CustomDialog("아이디 또는 비밀번호가 잘못되었습니다."),
     );
+  }
+
+  Future<bool> _checkConnection(String userId) async {
+    try {
+      // Firestore에서 사용자의 연결 상태를 확인
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      // 연결 상태가 true이면 연결된 상태
+      if (userDoc.exists && userDoc.data() != null) {
+        bool isConnected = userDoc['isConnected'] ?? false;
+        return isConnected;
+      } else {
+        return false; // 연결 상태가 없거나 문서가 존재하지 않으면 false
+      }
+    } catch (e) {
+      print("Error checking connection: $e");
+      return false; // 오류가 발생하면 연결되지 않은 상태로 간주
+    }
   }
 }

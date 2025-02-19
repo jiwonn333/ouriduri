@@ -152,10 +152,10 @@ class _HomeBaseScreenState extends State<HomeBaseScreen> {
               // 1. 사랑한 지 *** 일 째
               Row(
                 children: [
-                  Text('사랑한 지 ', style: TextStyle(fontSize: 18)),
+                  const Text('사랑한 지  ', style: TextStyle(fontSize: 18)),
                   Text('$loveDays',
                       style:
-                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   Text(' 일 째', style: TextStyle(fontSize: 18)),
                 ],
               ),
