@@ -31,7 +31,7 @@ class SignUpScreenViewModel {
       final user = await _authService.signUp(email, password);
       if (user != null) {
         // FireStore 회원 정보 저장 및 화면 닫기 요청
-        _fireStoreService.saveUserData(user.uid, id, email, birthday);
+        _fireStoreService.saveUserData(user.uid, id, email, birthday, "");
         listener.onNavigatorPop();
       } else {
         // 회원가입 실패

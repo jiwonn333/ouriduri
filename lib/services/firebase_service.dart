@@ -52,7 +52,7 @@ class FirebaseService {
 
       var data = doc.data() as Map<String, dynamic>;
       bool isConnected = data['isConnected'] ?? false;
-
+      print("isConnected $isConnected");
       return isConnected;
     } catch (e) {
       print("❌ Firestore 오류: $e");

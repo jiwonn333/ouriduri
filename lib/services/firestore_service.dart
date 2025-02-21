@@ -5,13 +5,14 @@ class FireStoreService {
 
   // 사용자 정보 저장
   Future<void> saveUserData(
-      String userId, String id, String email, String birthdate) async {
+      String userId, String id, String email, String birthdate, String inviteCode) async {
     try {
       await _firestore.collection('users').doc(userId as String?).set({
         'id': id,
         'email': email,
         'birthdate': birthdate,
-        'isConnected': false, // 초기 연결 상태
+        'isConnected': false,
+        'inviteCode' : inviteCode// 초기 연결 상태
       });
       print("회원가입 성공");
     } catch (e) {

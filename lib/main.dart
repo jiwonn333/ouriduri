@@ -18,6 +18,10 @@ import 'package:ouriduri_couple_app/utils/app_colors.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // 강제 로그아웃 테스트 (앱 삭제 후에도 로그인 유지되는지 확인)
+  // await FirebaseAuth.instance.signOut();
+
   await dotenv.load(fileName: "assets/env/.env");
   KakaoSdk.init(nativeAppKey: dotenv.env['KAKAO_APP_KEY']!);
 
@@ -68,27 +72,22 @@ class _MainPageState extends State<MainPage> {
 
   /// 로그인 여부 & 커플 연결 상태 확인
   Future<void> _checkAuthStatus() async {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform); // Firebase 초기화
     bool isLoggedIn = await FirebaseService.isUserLoggedIn();
+    print("isLoggedIn : $isLoggedIn");
     if (!isLoggedIn) {
-      // 로그인되지 않은 경우
-      setState(() {
-        print("⏸️ 로그인 되지 않은 경우");
-        _currentScreen = const StartScreen(); // StartScreen으로 이동
-      });
+      // ✅ 로그인되지 않은 경우 StartScreen으로 설정
+      if (mounted) {
+        setState(() {
+          _currentScreen = const StartScreen();
+        });
+      }
       return;
     } else {
       bool isConnected = await FirebaseService.isUserConnected();
-      if (isConnected) {
-        // 커플 연결된 경우
+      if (mounted) {
         setState(() {
-          print("⏸️ 커플 연결된 경우");
-          _currentScreen = const HomeScreen(); // HomeScreen으로 이동
-        });
-      } else {
-        // 커플 연결되지 않은 경우
-        setState(() {
-          print("⏸️ 커플 연결되지 않은 경우");
-          _currentScreen = const RequestScreen(); // RequestScreen으로 이동
+          _currentScreen = isConnected ? const HomeScreen() : const RequestScreen();
         });
       }
     }
@@ -160,33 +159,7 @@ class _MainPageState extends State<MainPage> {
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: const [Locale('en', ''), Locale('ko', '')],
-      home: FutureBuilder<bool>(
-        future: FirebaseService.isUserLoggedIn(),
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasData && snapshot.data == true) {
-            return FutureBuilder<bool>(
-              future: FirebaseService.isUserConnected(), // ✅ 커플 연결 여부 확인
-              builder: (BuildContext context, AsyncSnapshot<bool> connectedSnapshot) {
-                if (connectedSnapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (connectedSnapshot.hasData && connectedSnapshot.data == true) {
-                  return const HomeScreen(); // ✅ 커플 연결된 경우
-                } else {
-                  return const RequestScreen(); // ✅ 커플 연결되지 않은 경우
-                }
-              },
-            );
-          } else {
-            return const StartScreen(); // ✅ 로그인되지 않은 경우
-          }
-        },
-      ),
-
+      home: _currentScreen,
       onGenerateRoute: (RouteSettings settings) {
         if (settings.name == '/response_screen') {
           final String inviteCode = settings.arguments as String;
