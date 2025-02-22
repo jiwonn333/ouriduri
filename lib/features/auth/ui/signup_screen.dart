@@ -1,16 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ouriduri_couple_app/features/auth/viewmodels/signup_screen_viewmodel.dart';
 import 'package:ouriduri_couple_app/interface/signup_listener.dart';
-import 'package:ouriduri_couple_app/services/auth_service.dart';
-import 'package:ouriduri_couple_app/services/firestore_service.dart';
-import 'package:ouriduri_couple_app/ui/signup/signup_screen_viewmodel.dart';
-import 'package:ouriduri_couple_app/utils/validation_utils.dart';
 import 'package:ouriduri_couple_app/widgets/custom_date_picker.dart';
 import 'package:ouriduri_couple_app/widgets/custom_dialog.dart';
 import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
 import 'package:ouriduri_couple_app/widgets/custom_text_form_field.dart';
 
-import '../../widgets/input_style.dart';
+import '../../../core/services/auth_service.dart';
+import '../../../core/services/firestore_service.dart';
+import '../../../core/utils/validation_utils.dart';
+import '../../../widgets/input_style.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});

@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../ui/intro/start_screen.dart';
+import '../../ui/intro/start_screen.dart';
 
 /**
  * Firebase와 같은 외부 서비스와의 연동을 처리하는 로직을 포함
@@ -58,7 +57,7 @@ class AuthService {
         context,
         MaterialPageRoute(builder: (context) => StartScreen()),
         // LoginPage를 임포트한 후 사용
-            (route) => false,
+        (route) => false,
       );
     } catch (e) {
       // 로그아웃 과정에서 오류가 발생한 경우 사용자에게 알림을 제공
@@ -85,5 +84,4 @@ class AuthService {
     final User? user = _auth.currentUser;
     return user?.uid;
   }
-
 }

@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../utils/app_colors.dart';
+import '../../core/utils/app_colors.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../intro/home_screen.dart';
+import '../../navigation/main_navigation_screen.dart';
 
 class ResponseScreen extends StatefulWidget {
   final String? inviteCode;
@@ -145,7 +145,7 @@ class _ResponseScreenState extends State<ResponseScreen> {
         if (mounted) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
                 (route) => false, // 모든 기존 화면 제거
           );
         }

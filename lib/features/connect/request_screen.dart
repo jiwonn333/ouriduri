@@ -5,11 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
-import 'package:ouriduri_couple_app/ui/connect/response_screen.dart';
+import 'package:ouriduri_couple_app/features/connect/response_screen.dart';
 import 'package:ouriduri_couple_app/widgets/custom_app_bar.dart';
 
-import '../../utils/app_colors.dart';
-import '../intro/home_screen.dart';
+import '../../core/utils/app_colors.dart';
+import '../../navigation/main_navigation_screen.dart';
 
 class RequestScreen extends StatefulWidget {
   const RequestScreen({super.key});
@@ -46,7 +46,7 @@ class _RequestScreenState extends State<RequestScreen> {
             Future.microtask(() {
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
+                MaterialPageRoute(builder: (context) => MainNavigationScreen()),
                     (route) => false, // 기존 화면 모두 제거
               );
             });

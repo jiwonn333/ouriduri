@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/ui/signup/signup_screen.dart';
+import 'package:ouriduri_couple_app/features/auth/ui/signup_screen.dart';
 import 'package:ouriduri_couple_app/webview_page.dart';
 import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
 import 'package:ouriduri_couple_app/widgets/custom_handle_bar.dart';
 
-import '../../utils/app_colors.dart';
+import '../../../core/utils/app_colors.dart';
 
 class TermsBottomSheet extends StatefulWidget {
   const TermsBottomSheet({super.key});

@@ -3,7 +3,7 @@ import 'package:ouriduri_couple_app/widgets/custom_app_bar.dart';
 import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
 import 'package:ouriduri_couple_app/widgets/custom_text_form_field.dart';
 
-import '../../services/auth_service.dart';
+import '../../../core/services/auth_service.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();

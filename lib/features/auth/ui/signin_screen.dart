@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ouriduri_couple_app/features/auth/viewmodels/signin_screen_viewmodel.dart';
 import 'package:ouriduri_couple_app/interface/signin_listener.dart';
-import 'package:ouriduri_couple_app/services/firestore_service.dart';
-import 'package:ouriduri_couple_app/ui/connect/request_screen.dart';
-import 'package:ouriduri_couple_app/ui/intro/home_screen.dart';
-import 'package:ouriduri_couple_app/ui/signin/signin_screen_viewmodel.dart';
+import 'package:ouriduri_couple_app/navigation/main_navigation_screen.dart';
 import 'package:ouriduri_couple_app/widgets/custom_dialog.dart';
 import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
 import 'package:ouriduri_couple_app/widgets/custom_text_form_field.dart';
 
-import '../../services/auth_service.dart';
-import '../../utils/app_colors.dart';
+import '../../../core/services/auth_service.dart';
+import '../../../core/services/firestore_service.dart';
+import '../../../core/utils/app_colors.dart';
+import '../../connect/request_screen.dart';
 import 'reset_password_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -158,7 +158,7 @@ class _SignInScreenState extends State<SignInScreen> implements SignInListener {
         // 연결된 상태이면 홈 화면으로 이동
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
         );
       } else {
         // 연결되지 않은 상태이면 연결 화면으로 이동

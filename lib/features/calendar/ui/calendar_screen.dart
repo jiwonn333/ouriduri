@@ -5,7 +5,7 @@ import 'package:ouriduri_couple_app/widgets/custom_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../utils/app_colors.dart';
+import '../../../core/utils/app_colors.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/utils/app_colors.dart';
+import 'package:ouriduri_couple_app/core/utils/app_colors.dart';
 
 class CustomElevatedButton extends StatelessWidget {
   final void Function() onPressed;

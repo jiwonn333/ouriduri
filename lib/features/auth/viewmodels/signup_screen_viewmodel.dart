@@ -1,6 +1,7 @@
 import 'package:ouriduri_couple_app/interface/signup_listener.dart';
-import 'package:ouriduri_couple_app/services/auth_service.dart';
-import 'package:ouriduri_couple_app/services/firestore_service.dart';
+
+import '../../../core/services/auth_service.dart';
+import '../../../core/services/firestore_service.dart';
 
 class SignUpScreenViewModel {
   final AuthService _authService;

@@ -1,7 +1,6 @@
-import 'package:ouriduri_couple_app/services/auth_service.dart';
-import 'package:ouriduri_couple_app/services/firestore_service.dart';
-
-import '../../interface/signin_listener.dart';
+import '../../../core/services/auth_service.dart';
+import '../../../core/services/firestore_service.dart';
+import '../../../interface/signin_listener.dart';
 
 /**
  * SignInScreenViewModel: UI의 데이터 및 로직 처리 담당

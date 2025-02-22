@@ -1,19 +1,19 @@
 import 'dart:async';
 
 import 'package:app_links/app_links.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
-import 'package:ouriduri_couple_app/services/firebase_options.dart';
-import 'package:ouriduri_couple_app/services/firebase_service.dart';
-import 'package:ouriduri_couple_app/ui/connect/request_screen.dart';
-import 'package:ouriduri_couple_app/ui/connect/response_screen.dart';
-import 'package:ouriduri_couple_app/ui/intro/home_screen.dart';
+import 'package:ouriduri_couple_app/core/utils/app_colors.dart';
+import 'package:ouriduri_couple_app/navigation/main_navigation_screen.dart';
 import 'package:ouriduri_couple_app/ui/intro/start_screen.dart';
-import 'package:ouriduri_couple_app/utils/app_colors.dart';
+
+import 'core/services/firebase_options.dart';
+import 'core/services/firebase_service.dart';
+import 'features/connect/request_screen.dart';
+import 'features/connect/response_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,7 +72,8 @@ class _MainPageState extends State<MainPage> {
 
   /// 로그인 여부 & 커플 연결 상태 확인
   Future<void> _checkAuthStatus() async {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform); // Firebase 초기화
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform); // Firebase 초기화
     bool isLoggedIn = await FirebaseService.isUserLoggedIn();
     print("isLoggedIn : $isLoggedIn");
     if (!isLoggedIn) {
@@ -87,7 +88,9 @@ class _MainPageState extends State<MainPage> {
       bool isConnected = await FirebaseService.isUserConnected();
       if (mounted) {
         setState(() {
-          _currentScreen = isConnected ? const HomeScreen() : const RequestScreen();
+          _currentScreen = isConnected
+              ? const MainNavigationScreen()
+              : const RequestScreen();
         });
       }
     }
