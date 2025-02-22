@@ -135,7 +135,7 @@ class _ResponseScreenState extends State<ResponseScreen> {
         String coupleId = sortedUid.join("_");
 
         // 공유 데이터 저장할 문서 생성
-        await _firestore.collection("shared_data").doc(coupleId).set({
+        await _firestore.collection("sharedData").doc(coupleId).set({
           "calendar": [],
         });
 
