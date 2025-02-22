@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../ui/intro/start_screen.dart';
+import '../../features/auth/ui/start_screen.dart';
 
 /**
  * Firebase와 같은 외부 서비스와의 연동을 처리하는 로직을 포함

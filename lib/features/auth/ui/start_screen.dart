@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ouriduri_couple_app/features/auth/ui/signin_screen.dart';
 import 'package:ouriduri_couple_app/features/auth/ui/terms_bottom_sheet.dart';
 
-import '../../core/utils/app_colors.dart';
+import '../../../core/utils/app_colors.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
