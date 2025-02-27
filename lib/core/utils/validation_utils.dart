@@ -80,4 +80,19 @@ class JoinValidate {
     }
     return null;
   }
+
+  String? validateNickname(String? nickname) {
+    if (nickname == null || nickname.isEmpty) {
+      return '닉네임을 입력해주세요';
+    }
+
+    final regex = RegExp(r'^[a-zA-Z0-9가-힣_.]{2,12}$');
+    // 한글, 영문, 숫자, _ . 허용 (2~12자)
+
+    if (!regex.hasMatch(nickname)) {
+      return '12자 이내로 입력해주세요.';
+    }
+
+    return null;
+  }
 }

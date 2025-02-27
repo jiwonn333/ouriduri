@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ouriduri_couple_app/features/auth/ui/signup_screen.dart';
-import 'package:ouriduri_couple_app/webview_page.dart';
+import 'package:ouriduri_couple_app/features/webview/webview_page.dart';
 import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
 import 'package:ouriduri_couple_app/widgets/custom_handle_bar.dart';
 
@@ -167,13 +167,17 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
               isValidated: allChecked,
               onPressed: () {
                 Navigator.pop(context); // 현재 BottomSheet를 닫음
-                showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    builder: (context) => const SignUpScreen());
+                // showModalBottomSheet(
+                //     context: context,
+                //     isScrollControlled: true,
+                //     shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(20.0),
+                //     ),
+                //     builder: (context) => const SignUpScreen());
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                );
               },
               btnText: "동의하고 계속하기",
             ),
