@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:ouriduri_couple_app/features/auth/ui/signin_screen.dart';
 import 'package:ouriduri_couple_app/features/auth/viewmodels/signup_screen_viewmodel.dart';
 import 'package:ouriduri_couple_app/interface/signup_listener.dart';
-import 'package:ouriduri_couple_app/widgets/custom_dialog.dart';
 import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
 import 'package:ouriduri_couple_app/widgets/custom_text_form_field.dart';
 
@@ -310,7 +309,21 @@ class _SignUpScreenState extends State<SignUpScreen> implements SignUpListener {
 
     showCupertinoDialog(
       context: context,
-      builder: (context) => const CustomDialog("회원가입에 실패했습니다."),
+      builder: (context) => CupertinoAlertDialog(
+        title: const Text("회원가입 실패"),
+        content: const Text("이미 존재하는 정보입니다. \n 다시 시도해주세요."),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // 다이얼로그 닫기
+            },
+            child: const Text(
+              "확인",
+              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -402,7 +415,7 @@ class _SignUpScreenState extends State<SignUpScreen> implements SignUpListener {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context, rootNavigator: true).pop(); // 다이얼로그 닫기
+                Navigator.pop(context); // 다이얼로그 닫기
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -418,19 +431,6 @@ class _SignUpScreenState extends State<SignUpScreen> implements SignUpListener {
             ),
           ],
         );
-        // return AlertDialog(
-        //   title: const Text("회원가입 성공"),
-        //   content: const Text("회원가입이 완료되었습니다!"),
-        //   actions: [
-        //     TextButton(
-        //       onPressed: () {
-        //         Navigator.pop(context); // 다이얼로그 닫기
-        //         Navigator.pop(context); // 회원가입 화면 닫기 (이전 화면으로 이동)
-        //       },
-        //       child: const Text("확인"),
-        //     ),
-        //   ],
-        // );
       },
     );
   }
