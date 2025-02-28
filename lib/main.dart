@@ -7,7 +7,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
 import 'package:ouriduri_couple_app/core/utils/app_colors.dart';
-import 'package:ouriduri_couple_app/navigation/main_navigation_screen.dart';
 import 'package:ouriduri_couple_app/features/auth/ui/start_screen.dart';
 
 import 'core/services/firebase_options.dart';
@@ -75,7 +74,6 @@ class _MainPageState extends State<MainPage> {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform); // Firebase 초기화
     bool isLoggedIn = await FirebaseService.isUserLoggedIn();
-    print("isLoggedIn : $isLoggedIn");
     if (!isLoggedIn) {
       // ✅ 로그인되지 않은 경우 StartScreen으로 설정
       if (mounted) {
@@ -88,10 +86,18 @@ class _MainPageState extends State<MainPage> {
       bool isConnected = await FirebaseService.isUserConnected();
       if (mounted) {
         setState(() {
-          _currentScreen = isConnected
-              ? const MainNavigationScreen()
-              : const RequestScreen();
+          // 기본적으로 StartScreen 으로 설정
+          _currentScreen = const StartScreen();
         });
+
+        if (!isConnected) {
+          // ✅ 커플 연결이 안 된 경우, StartScreen 위에 RequestScreen 띄우기
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _navigatorKey.currentState?.push(
+              MaterialPageRoute(builder: (context) => const RequestScreen()),
+            );
+          });
+        }
       }
     }
   }
