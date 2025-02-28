@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ouriduri_couple_app/features/auth/ui/signin_screen.dart';
 import 'package:ouriduri_couple_app/features/auth/viewmodels/signup_screen_viewmodel.dart';
 import 'package:ouriduri_couple_app/interface/signup_listener.dart';
 import 'package:ouriduri_couple_app/widgets/custom_dialog.dart';
@@ -199,43 +200,6 @@ class _SignUpScreenState extends State<SignUpScreen> implements SignUpListener {
           textInputAction: TextInputAction.done,
           maxLength: 12,
         );
-      // return Column(
-      //   crossAxisAlignment: CrossAxisAlignment.start,
-      //   children: [
-      //     TextFormField(
-      //       controller: _nicknameController,
-      //       decoration: InputDecoration(
-      //         hintText: "닉네임",
-      //         prefixIcon: const Icon(Icons.account_circle),
-      //         fillColor: Colors.grey.withOpacity(0.1),
-      //         filled: true,
-      //         border: OutlineInputBorder(
-      //           borderRadius: BorderRadius.circular(10),
-      //           borderSide: BorderSide.none,
-      //         ),
-      //         errorText: _nicknameError,
-      //       ),
-      //       validator: _validateNickname,
-      //       onChanged: (value) {
-      //         if (value.length > 12) {  // ✅ 잘못된 `300` → `12`로 변경
-      //           _nicknameController.value = TextEditingValue(
-      //             text: value.substring(0, 12), // ✅ 12자로 강제 제한
-      //             selection: TextSelection.collapsed(offset: 12),
-      //           );
-      //         }
-      //         setState(() {
-      //           _nicknameError = _validateNickname(value); // ✅ 실시간 유효성 검사
-      //         });
-      //       },
-      //       inputFormatters: [
-      //         FilteringTextInputFormatter.allow(RegExp(r'[a-z|A-Z|0-9|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|ᆞ|ᆢ|ㆍ|ᆢ|ᄀᆞ|ᄂᆞ|ᄃᆞ|ᄅᆞ|ᄆᆞ|ᄇᆞ|ᄉᆞ|ᄋᆞ|ᄌᆞ|ᄎᆞ|ᄏᆞ|ᄐᆞ|ᄑᆞ|ᄒᆞ]'))
-      //       ],
-      //       keyboardType: TextInputType.text,
-      //       textInputAction: TextInputAction.done,
-      //       maxLength: 12, // ✅ 최대 길이 설정 (입력 초과 방지)
-      //     ),
-      //   ],
-      // );
       default:
         return Container();
     }
@@ -322,21 +286,20 @@ class _SignUpScreenState extends State<SignUpScreen> implements SignUpListener {
 
   @override
   void onValidationError(String error) {
-    setState(() {
-      switch (error) {
-        case "idError":
-          _idError = "이미 존재하는 아이디입니다.";
-          break;
-        case "emailError":
-          _emailError = "이미 존재하는 이메일입니다.";
-          break;
-      }
-    });
+    switch (error) {
+      case "idError":
+        _idError = "이미 존재하는 아이디입니다.";
+        break;
+      case "emailError":
+        _emailError = "이미 존재하는 이메일입니다.";
+        break;
+    }
   }
 
   @override
   void onNavigatorPop() {
-    Navigator.pop(context);
+    _showSuccessDialog(); // 성공 알림창 띄우기
+    // Navigator.pop(context);
   }
 
   @override
@@ -417,18 +380,58 @@ class _SignUpScreenState extends State<SignUpScreen> implements SignUpListener {
     return ["아이디를 입력해주세요", "이메일을 입력해주세요", "비밀번호를 입력해주세요", "닉네임을 입력해주세요"][step];
   }
 
-// String _getStepTitle(int step) {
-//   switch (step) {
-//     case 0:
-//       return "아이디를 입력해주세요";
-//     case 1:
-//       return "이메일을 입력해주세요";
-//     case 2:
-//       return "비밀번호를 입력해주세요";
-//     case 3:
-//       return "닉네임을 입력해주세요";
-//     default:
-//       return "계정 등록";
-//   }
-// }
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text("회원가입 성공!"),
+          content: const Text("회원가입이 완료되었습니다! \n 로그인 페이지로 이동하시겠습니까?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: const Text(
+                "나가기",
+                style:
+                    TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop(); // 다이얼로그 닫기
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const SignInScreen()), // 로그인 화면으로 이동
+                );
+              },
+              child: const Text(
+                "확인",
+                style:
+                    TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        );
+        // return AlertDialog(
+        //   title: const Text("회원가입 성공"),
+        //   content: const Text("회원가입이 완료되었습니다!"),
+        //   actions: [
+        //     TextButton(
+        //       onPressed: () {
+        //         Navigator.pop(context); // 다이얼로그 닫기
+        //         Navigator.pop(context); // 회원가입 화면 닫기 (이전 화면으로 이동)
+        //       },
+        //       child: const Text("확인"),
+        //     ),
+        //   ],
+        // );
+      },
+    );
+  }
 }
