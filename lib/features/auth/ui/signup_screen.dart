@@ -416,11 +416,24 @@ class _SignUpScreenState extends State<SignUpScreen> implements SignUpListener {
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // 다이얼로그 닫기
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const SignInScreen()), // 로그인 화면으로 이동
+                Navigator.pop(context); // 회원가입 닫기
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true, // 키보드 올라올 때 전체 화면을 덮을 수 있도록 설정
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
+                  ),
+                  builder: (context) {
+                    return ClipRRect(
+                      // ✅ 둥근 모서리를 유지하도록 ClipRRect 추가
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
+                      child: const SignInScreen(),
+                    );
+                  },
                 );
               },
               child: const Text(

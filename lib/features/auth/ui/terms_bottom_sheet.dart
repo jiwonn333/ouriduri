@@ -91,7 +91,6 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
-    print("screenHeight : $screenHeight");
     return FractionallySizedBox(
       heightFactor: screenHeight <= 667 ? 0.5 : 0.4,
       child: Container(
