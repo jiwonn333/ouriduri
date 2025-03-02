@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:ouriduri_couple_app/features/auth/ui/signup_screen.dart';
 import 'package:ouriduri_couple_app/features/webview/webview_page.dart';
 import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
-import 'package:ouriduri_couple_app/widgets/custom_handle_bar.dart';
 
 import '../../../core/utils/app_colors.dart';
 
@@ -52,6 +51,10 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
       value: value,
       onChanged: onChanged,
       activeColor: AppColors.primaryDarkPink,
+      side: const BorderSide(color: Colors.grey, width: 2),
+      checkboxShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
+      ),
       title: Row(
         children: [
           Expanded(
@@ -61,7 +64,6 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                 style: const TextStyle(
                   color: AppColors.primaryDarkPink,
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
                   fontFamily: 'Ouriduri',
                 ),
                 children: [
@@ -70,7 +72,6 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
                       fontFamily: 'Ouriduri',
                     ),
                   ),
@@ -106,19 +107,27 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
         ),
         child: Column(
           children: [
-            const SizedBox(height: 16.0),
-            const CustomHandleBar(),
-            const SizedBox(height: 16.0),
-            const Text(
-              '이용약관에 동의해 주세요',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            const SizedBox(height: 32.0),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(width: 30.0),
+                Text(
+                  '우리두리를 이용하려면 약관 동의가 필요해요',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 5.0),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.leading,
               value: allChecked,
               onChanged: _updateAllChecked,
               activeColor: AppColors.primaryDarkPink,
+              side: const BorderSide(color: Colors.grey, width: 2),
+              checkboxShape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
               title: const Row(
                 children: [
                   Expanded(
@@ -135,18 +144,25 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                 ],
               ),
             ),
-            const Divider(color: Colors.grey),
+            const Divider(
+              color: Colors.grey,
+              thickness: 0.5,
+              height: 1,
+            ),
             CheckboxListTile(
                 controlAffinity: ListTileControlAffinity.leading,
                 value: isAgeOver14,
                 activeColor: AppColors.primaryDarkPink,
+                side: const BorderSide(color: Colors.grey, width: 2),
+                checkboxShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
                 title: const Text.rich(
                   TextSpan(
                     text: '[필수] ',
                     style: TextStyle(
                       color: AppColors.primaryDarkPink,
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
                       fontFamily: 'Ouriduri',
                     ),
                     children: [
@@ -155,7 +171,6 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
                           fontFamily: 'Ouriduri',
                         ),
                       ),
@@ -172,7 +187,7 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                     builder: (context) => const WebViewPage(
                       appBarTitle: "이용약관",
                       url:
-                      "https://ajar-vise-a12.notion.site/14157d0601f7807ba2c0eda287fbcdd2?pvs=4",
+                          "https://ajar-vise-a12.notion.site/14157d0601f7807ba2c0eda287fbcdd2?pvs=4",
                     ),
                   ),
                 );
@@ -195,17 +210,11 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
               },
               onChanged: (value) => _updateIndividualCheck(value, 'privacy'),
             ),
+            const SizedBox(height: 10),
             CustomElevatedButton(
               isValidated: allChecked,
               onPressed: () {
                 Navigator.pop(context); // 현재 BottomSheet를 닫음
-                // showModalBottomSheet(
-                //     context: context,
-                //     isScrollControlled: true,
-                //     shape: RoundedRectangleBorder(
-                //       borderRadius: BorderRadius.circular(20.0),
-                //     ),
-                //     builder: (context) => const SignUpScreen());
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const SignUpScreen()),
