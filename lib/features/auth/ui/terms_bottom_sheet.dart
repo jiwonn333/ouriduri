@@ -15,12 +15,14 @@ class TermsBottomSheet extends StatefulWidget {
 
 class _TermsBottomSheetState extends State<TermsBottomSheet> {
   bool allChecked = false;
+  bool isAgeOver14 = false;
   bool termsChecked = false;
   bool privacyChecked = false;
 
   void _updateAllChecked(bool? value) {
     setState(() {
       allChecked = value ?? false;
+      isAgeOver14 = allChecked;
       termsChecked = allChecked;
       privacyChecked = allChecked;
     });
@@ -28,12 +30,14 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
 
   void _updateIndividualCheck(bool? value, String type) {
     setState(() {
-      if (type == 'terms') {
+      if (type == 'age') {
+        isAgeOver14 = value ?? false;
+      } else if (type == 'terms') {
         termsChecked = value ?? false;
       } else if (type == 'privacy') {
         privacyChecked = value ?? false;
       }
-      allChecked = termsChecked && privacyChecked;
+      allChecked = isAgeOver14 && termsChecked && privacyChecked;
     });
   }
 
@@ -132,6 +136,33 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
               ),
             ),
             const Divider(color: Colors.grey),
+            CheckboxListTile(
+                controlAffinity: ListTileControlAffinity.leading,
+                value: isAgeOver14,
+                activeColor: AppColors.primaryDarkPink,
+                title: const Text.rich(
+                  TextSpan(
+                    text: '[필수] ',
+                    style: TextStyle(
+                      color: AppColors.primaryDarkPink,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Ouriduri',
+                    ),
+                    children: [
+                      TextSpan(
+                        text: "만 14세 이상입니다.",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Ouriduri',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                onChanged: (value) => _updateIndividualCheck(value, 'age')),
             _buildCheckBoxTile(
               value: termsChecked,
               label: '이용약관 동의',
@@ -141,7 +172,7 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                     builder: (context) => const WebViewPage(
                       appBarTitle: "이용약관",
                       url:
-                          "https://ajar-vise-a12.notion.site/14157d0601f7807ba2c0eda287fbcdd2?pvs=4",
+                      "https://ajar-vise-a12.notion.site/14157d0601f7807ba2c0eda287fbcdd2?pvs=4",
                     ),
                   ),
                 );
