@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ouriduri_couple_app/features/auth/ui/widget/terms_bottom_sheet_state.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../core/utils/app_colors.dart';
 import '../signin_screen.dart';
@@ -14,7 +16,10 @@ class StartButtons extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
-      builder: (context) => const TermsBottomSheet(),
+      builder: (context) => ChangeNotifierProvider(
+        create: (_) => TermsBottomSheetState(),
+        child: const TermsBottomSheet(),
+      ),
     );
   }
 
