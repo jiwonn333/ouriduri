@@ -38,31 +38,6 @@ class ResetPasswordScreen extends StatelessWidget {
                   _authService.sendPasswordResetEmail(email);
                 },
                 btnText: "재생성 이메일 보내기")
-
-            // ElevatedButton(
-            //   onPressed: () {
-            //     final email = _emailController.text.trim();
-            //     authService.sendPasswordResetEmail(email);
-            //     ScaffoldMessenger.of(context).showSnackBar(
-            //       const SnackBar(content: Text("비밀번호 재설정 이메일을 보냈습니다.")),
-            //     );
-            //   },
-            //   style: ElevatedButton.styleFrom(
-            //     backgroundColor: AppColors.primaryPink,
-            //     padding: const EdgeInsets.symmetric(vertical: 10),
-            //     shape: RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.circular(10.0),
-            //     ),
-            //   ),
-            //   child: const Text(
-            //     '재생성 이메일 보내기',
-            //     style: TextStyle(
-            //       color: Colors.white,
-            //       fontSize: 18.0,
-            //       fontWeight: FontWeight.bold,
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),

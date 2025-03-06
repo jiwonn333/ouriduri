@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ouriduri_couple_app/features/auth/ui/widget/forgot_password_button.dart';
 import 'package:ouriduri_couple_app/features/auth/viewmodels/signin_screen_viewmodel.dart';
-import 'package:ouriduri_couple_app/interface/signin_listener.dart';
 import 'package:ouriduri_couple_app/navigation/main_navigation_screen.dart';
 import 'package:ouriduri_couple_app/widgets/custom_dialog.dart';
 import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
@@ -8,9 +8,7 @@ import 'package:ouriduri_couple_app/widgets/custom_text_form_field.dart';
 
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
-import '../../../core/utils/app_colors.dart';
 import '../../connect/request_screen.dart';
-import 'reset_password_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -19,7 +17,7 @@ class SignInScreen extends StatefulWidget {
   State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> implements SignInListener {
+class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -83,35 +81,12 @@ class _SignInScreenState extends State<SignInScreen> implements SignInListener {
                       ),
 
                       const SizedBox(height: 16.0),
-                      // 비밀번호 분실
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ResetPasswordScreen()),
-                          );
-                        },
-                        child: const Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            '비밀번호를 분실하셨나요?',
-                            style: TextStyle(
-                                color: AppColors.primaryDarkPink,
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-
+                      const ForgotPasswordButton(),
                       const SizedBox(height: 24.0),
                       // 로그인 버튼
                       CustomElevatedButton(
                           isValidated: true,
-                          onPressed: () {
-                            _viewModel.signIn(_idController.text,
-                                _passwordController.text, this);
-                          },
+                          onPressed: _handleSignIn,
                           btnText: "로그인"),
                       const SizedBox(height: 16.0),
                     ],
@@ -136,43 +111,42 @@ class _SignInScreenState extends State<SignInScreen> implements SignInListener {
     );
   }
 
-  @override
-  void onLoginFailed() {
-    CustomDialog.show(context, "아이디 또는 비밀번호가 일치하지 않습니다.");
-  }
+  /// 로그인 버튼 클릭 시 처리
+  Future<void> _handleSignIn() async {
+    String? result = await _viewModel.signIn(
+      _idController.text,
+      _passwordController.text,
+    );
 
-  @override
-  void onLoginSuccess() async {
-    print("로그인 성공");
-
-    try {
-      bool isConnected = await _viewModel.checkedConnection(_idController.text);
-
-      if (isConnected) {
-        // 연결된 상태이면 홈 화면으로 이동
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
-        );
-      } else {
-        // 연결되지 않은 상태이면 연결 화면으로 이동
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const RequestScreen()),
-        );
-      }
-    } catch (e) {
-      print("연결 상태 확인 중 오류 발생: $e");
+    if (result == "CONNECTED") {
+      _navigateToMain();
+    } else if (result == "NOT_CONNECTED") {
+      _navigateToRequest();
+    } else {
+      CustomDialog.show(context, result!);
     }
   }
 
-  @override
-  void onNoRegisterEmail() {
-    CustomDialog.show(context, "등록된 이메일이 없습니다. \n 회원가입을 먼저 진행해 주세요.");
+  /// 홈 화면 이동
+  void _navigateToMain() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
+    );
+  }
+
+  /// 연결 요청 화면 이동
+  void _navigateToRequest() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const RequestScreen()),
+    );
   }
 
   @override
-  void onValidationError() {
-    CustomDialog.show(context, "아이디 또는 비밀번호가 잘못되었습니다.");
+  void dispose() {
+    _idController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }
