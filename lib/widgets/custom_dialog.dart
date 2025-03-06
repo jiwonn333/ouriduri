@@ -8,19 +8,29 @@ class CustomDialog extends StatelessWidget {
 
   const CustomDialog(this.content, {super.key});
 
+  static void show(BuildContext context, String message) {
+    if (context.mounted) {
+      showCupertinoDialog(
+        context: context,
+        builder: (context) => CustomDialog(message),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
       content: Center(child: Text(content)),
       actions: [
         TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text(
-              "확인",
-              style: TextStyle(
-                  color: AppColors.primaryDarkPink,
-                  fontFamily: 'San Francisco font'),
-            ))
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text(
+            "확인",
+            style: TextStyle(
+              color: AppColors.primaryDarkPink,
+            ),
+          ),
+        ),
       ],
     );
   }

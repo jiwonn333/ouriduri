@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ouriduri_couple_app/features/auth/viewmodels/signin_screen_viewmodel.dart';
 import 'package:ouriduri_couple_app/interface/signin_listener.dart';
@@ -140,11 +138,7 @@ class _SignInScreenState extends State<SignInScreen> implements SignInListener {
 
   @override
   void onLoginFailed() {
-    // 로그인 실패 시 사용자에게 알림
-    showCupertinoDialog(
-      context: context,
-      builder: (context) => const CustomDialog("아이디 또는 비밀번호가 일치하지 않습니다."),
-    );
+    CustomDialog.show(context, "아이디 또는 비밀번호가 일치하지 않습니다.");
   }
 
   @override
@@ -174,41 +168,11 @@ class _SignInScreenState extends State<SignInScreen> implements SignInListener {
 
   @override
   void onNoRegisterEmail() {
-    // 이메일 미등록 시 사용자에게 알림
-    showCupertinoDialog(
-      context: context,
-      builder: (context) =>
-          const CustomDialog("등록된 이메일이 없습니다. \n 회원가입을 먼저 진행해 주세요."),
-    );
+    CustomDialog.show(context, "등록된 이메일이 없습니다. \n 회원가입을 먼저 진행해 주세요.");
   }
 
   @override
   void onValidationError() {
-    // 유효성 검사 실패 시 사용자에게 알림을 표시
-    showCupertinoDialog(
-      context: context,
-      builder: (context) => const CustomDialog("아이디 또는 비밀번호가 잘못되었습니다."),
-    );
-  }
-
-  Future<bool> _checkConnection(String userId) async {
-    try {
-      // Firestore에서 사용자의 연결 상태를 확인
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .get();
-
-      // 연결 상태가 true이면 연결된 상태
-      if (userDoc.exists && userDoc.data() != null) {
-        bool isConnected = userDoc['isConnected'] ?? false;
-        return isConnected;
-      } else {
-        return false; // 연결 상태가 없거나 문서가 존재하지 않으면 false
-      }
-    } catch (e) {
-      print("Error checking connection: $e");
-      return false; // 오류가 발생하면 연결되지 않은 상태로 간주
-    }
+    CustomDialog.show(context, "아이디 또는 비밀번호가 잘못되었습니다.");
   }
 }
