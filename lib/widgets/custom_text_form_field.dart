@@ -76,7 +76,7 @@ class CustomTextFormField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextFormField(
-          cursorColor: Colors.blue,
+          cursorColor: Colors.grey,
           controller: controller,
           decoration: buildInputDecoration(hintText, icon),
           keyboardType: keyboardType,
