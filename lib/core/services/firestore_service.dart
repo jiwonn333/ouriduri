@@ -4,15 +4,16 @@ class FireStoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // 사용자 정보 저장
-  Future<void> saveUserData(
-      String userId, String id, String email, String birthdate, String inviteCode) async {
+  Future<void> saveUserData(String userId, String id, String email,
+      String nickname, String inviteCode) async {
     try {
       await _firestore.collection('users').doc(userId as String?).set({
         'id': id,
         'email': email,
-        'birthdate': birthdate,
+        'nickname': nickname,
+        'birthdate': '',
         'isConnected': false,
-        'inviteCode' : inviteCode// 초기 연결 상태
+        'inviteCode': inviteCode // 초기 연결 상태
       });
       print("회원가입 성공");
     } catch (e) {
