@@ -45,9 +45,9 @@ class DateSettingViewModel with ChangeNotifier {
     String? uid = await _getUserUID();
 
     if (uid != null) {
-      prefs.setString(uid, _selectedDate.toIso8601String());
-      String formattedDate = getFormattedDate();
-      prefs.setString('${uid}_formatted', formattedDate);
+      prefs.setString('$uid-startDate', _selectedDate.toIso8601String());
+      // String formattedDate = getFormattedDate();
+      // prefs.setString('${uid}_formatted', formattedDate);
     }
   }
 

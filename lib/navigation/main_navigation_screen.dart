@@ -18,7 +18,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   // 각 탭에 연결될 화면 리스트
   final List<Widget> _pages = <Widget>[
-    const HomeScreen(),
+    const HomeBaseScreen(),
     const CalendarScreen(),
     const ListScreen(),
     const SettingsScreen(),

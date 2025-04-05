@@ -8,11 +8,13 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
 import 'package:ouriduri_couple_app/core/utils/app_colors.dart';
 import 'package:ouriduri_couple_app/features/auth/ui/start_screen.dart';
+import 'package:provider/provider.dart';
 
 import 'core/services/firebase_options.dart';
 import 'core/services/firebase_service.dart';
 import 'features/connect/request_screen.dart';
 import 'features/connect/response_screen.dart';
+import 'features/home/viewmodels/home_base_viewmodel.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +26,14 @@ void main() async {
   await dotenv.load(fileName: "assets/env/.env");
   KakaoSdk.init(nativeAppKey: dotenv.env['KAKAO_APP_KEY']!);
 
-  runApp(const MainPage());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => HomeBaseViewModel()),
+      ],
+      child: const MainPage(),
+    ),
+  );
 }
 
 class MainPage extends StatefulWidget {
