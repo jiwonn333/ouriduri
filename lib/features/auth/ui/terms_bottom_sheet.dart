@@ -33,63 +33,70 @@ class TermsBottomSheet extends StatelessWidget {
               top: Radius.circular(20),
             ),
           ),
-          child: Column(
-            children: [
-              const SizedBox(height: 32.0),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30.0),
-                child: Text(
-                  '우리두리를 이용하려면 약관 동의가 필요해요',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(height: 5.0),
-              TermsCheckboxTitle(
-                value: state.allChecked,
-                label: "모두 동의합니다.",
-                onChanged: state.updateAllChecked,
-              ),
-              const Divider(color: Colors.grey, thickness: 0.5, height: 1),
-              TermsCheckboxTitle(
-                value: state.isAgeOver14,
-                label: "만 14세 이상입니다.",
-                onChanged: (value) => state.updateIndividualCheck(value, 'age'),
-              ),
-              TermsCheckboxTitle(
-                value: state.termsChecked,
-                label: "이용약관 동의",
-                onTap: () => _navigateToWebView(
-                  context,
-                  "이용약관",
-                  "https://ajar-vise-a12.notion.site/14157d0601f7807ba2c0eda287fbcdd2?pvs=4",
-                ),
-                onChanged: (value) =>
-                    state.updateIndividualCheck(value, 'terms'),
-              ),
-              TermsCheckboxTitle(
-                value: state.privacyChecked,
-                label: "개인정보 처리방침 동의",
-                onTap: () => _navigateToWebView(
-                  context,
-                  "개인정보 처리방침",
-                  "https://ajar-vise-a12.notion.site/14757d0601f7809494fefe57fb3adbdd?pvs=4",
-                ),
-                onChanged: (value) =>
-                    state.updateIndividualCheck(value, 'privacy'),
-              ),
-              const SizedBox(height: 10.0),
-              CustomElevatedButton(
-                  isValidated: state.allChecked,
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.push(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: Column(
+                children: [
+                  const SizedBox(height: 32.0),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 30.0),
+                    child: Text(
+                      '우리두리를 이용하려면 약관 동의가 필요해요',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(height: 5.0),
+                  TermsCheckboxTitle(
+                    value: state.allChecked,
+                    label: "모두 동의합니다.",
+                    onChanged: state.updateAllChecked,
+                  ),
+                  const Divider(color: Colors.grey, thickness: 0.5, height: 1),
+                  TermsCheckboxTitle(
+                    value: state.isAgeOver14,
+                    label: "만 14세 이상입니다.",
+                    onChanged: (value) =>
+                        state.updateIndividualCheck(value, 'age'),
+                  ),
+                  TermsCheckboxTitle(
+                    value: state.termsChecked,
+                    label: "이용약관 동의",
+                    onTap: () => _navigateToWebView(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const SignUpScreen()),
-                    );
-                  },
-                  btnText: "동의하고 계속하기")
-            ],
+                      "이용약관",
+                      "https://ajar-vise-a12.notion.site/14157d0601f7807ba2c0eda287fbcdd2?pvs=4",
+                    ),
+                    onChanged: (value) =>
+                        state.updateIndividualCheck(value, 'terms'),
+                  ),
+                  TermsCheckboxTitle(
+                    value: state.privacyChecked,
+                    label: "개인정보 처리방침 동의",
+                    onTap: () => _navigateToWebView(
+                      context,
+                      "개인정보 처리방침",
+                      "https://ajar-vise-a12.notion.site/14757d0601f7809494fefe57fb3adbdd?pvs=4",
+                    ),
+                    onChanged: (value) =>
+                        state.updateIndividualCheck(value, 'privacy'),
+                  ),
+                  const SizedBox(height: 10.0),
+                  CustomElevatedButton(
+                      isValidated: state.allChecked,
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignUpScreen()),
+                        );
+                      },
+                      btnText: "동의하고 계속하기")
+                ],
+              ),
+            ),
           ),
         ),
       ),
