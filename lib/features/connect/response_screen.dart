@@ -1,10 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/services/couple_service.dart';
 import '../../core/utils/app_colors.dart';
-import '../../widgets/custom_app_bar.dart';
 import '../../navigation/main_navigation_screen.dart';
+import '../../widgets/custom_app_bar.dart';
 
 class ResponseScreen extends StatefulWidget {
   final String? inviteCode;
@@ -17,7 +17,7 @@ class ResponseScreen extends StatefulWidget {
 
 class _ResponseScreenState extends State<ResponseScreen> {
   late TextEditingController _inviteCodeController;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final CoupleService _coupleService = CoupleService();
 
   @override
   void initState() {
@@ -52,7 +52,7 @@ class _ResponseScreenState extends State<ResponseScreen> {
             const SizedBox(height: 20),
             TextField(
               controller: _inviteCodeController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: "초대 코드",
                 border: OutlineInputBorder(),
               ),
@@ -96,64 +96,42 @@ class _ResponseScreenState extends State<ResponseScreen> {
     }
 
     try {
-      // 초대 코드가 존재하는지 Firestore에서 확인
-      QuerySnapshot inviteCodeQuery = await _firestore
-          .collection("users")
-          .where("inviteCode", isEqualTo: enteredCode)
-          .limit(1)
-          .get();
+      // 파트너 UID 조회
+      final partnerUid =
+          await _coupleService.getPartnerUidByInviteCode(enteredCode);
+      if (partnerUid == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("올바르지 않은 초대 코드입니다.")),
+        );
+        return;
+      }
 
-      if (inviteCodeQuery.docs.isNotEmpty) {
-        // 초대 코드가 일치하는 사용자 찾기
-        DocumentSnapshot userDoc = inviteCodeQuery.docs.first;
-        String partnerUid = userDoc.id; // 상대방의 UID 가져오기
-        print("상대방의 uid : $partnerUid");
-        String partnerInviteCode = userDoc.get("inviteCode"); // 상대방의 초대 코드 가져오기
+      final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
+      if (currentUserUid == null) return;
+      print("###RESPONSE_SCREEN### 현재 사용자: $currentUserUid, 파트너: $partnerUid");
 
-        // 현재 로그인 한 사용자의 uid
-        User? user = FirebaseAuth.instance.currentUser;
-        String? currentUserUid = user?.uid;
-        if (currentUserUid == null) return;
-        print("📢 현재 로그인된 유저: $currentUserUid");
+      // 연결 처리
+      await _coupleService.connectUsers(currentUserUid, partnerUid);
 
-        // Firestore에 isConnected 값을 true로 업데이트 (partner와 현재 로그인한 user)
-        await _firestore.collection("users").doc(partnerUid).update({
-          "isConnected": true,
-          "partnerUid": currentUserUid,
-          "inviteCode": FieldValue.delete(), // ✅ 초대 코드 삭제
-        });
+      // 커플 ID 생성 및 커플 문서 생성
+      final coupleId = _coupleService.getCoupleId(currentUserUid, partnerUid);
+      await _coupleService.createCoupleDocument(coupleId);
 
-        await _firestore.collection("users").doc(currentUserUid).update({
-          "isConnected": true,
-          "partnerUid": partnerUid,
-          "inviteCode": FieldValue.delete(), // ✅ 초대 코드 삭제
-        });
+      print("✅ 커플 연결 완료!");
 
-        // ✅ 항상 같은 coupleId를 생성 (정렬 사용)
-        List<String> sortedUid = [currentUserUid, partnerUid];
-        sortedUid.sort();
-        String coupleId = sortedUid.join("_");
-
-        // 공유 데이터 저장할 문서 생성
-        await _firestore.collection("sharedData").doc(coupleId).set({
-          "calendar": [],
-        });
-
-        print("✅ 커플 연결 완료: $partnerUid");
-
-        // 커플 연결 성공 → `HomeScreen`으로 이동 & `RequestScreen`/`ResponseScreen` 제거
-        if (mounted) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
-                (route) => false, // 모든 기존 화면 제거
-          );
-        }
-      } else {
-        print("❌ 초대 코드가 올바르지 않습니다.");
+      // 커플 연결 성공 → `HomeScreen`으로 이동 & `RequestScreen`/`ResponseScreen` 제거
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
+          (route) => false,
+        );
       }
     } catch (e) {
       print("🔥 오류 발생: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("오류가 발생했습니다. 다시 시도해주세요.")),
+      );
     }
   }
 }
