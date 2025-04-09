@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/features/home/viewmodels/date_setting_viewmodel.dart';
 import 'package:ouriduri_couple_app/core/utils/app_colors.dart';
+import 'package:ouriduri_couple_app/features/home/viewmodels/date_setting_viewmodel.dart';
 import 'package:ouriduri_couple_app/widgets/custom_app_bar.dart';
 import 'package:ouriduri_couple_app/widgets/custom_date_picker.dart';
 import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
@@ -17,21 +17,19 @@ class _DateSettingScreenState extends State<DateSettingScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeData();
-  }
 
-  Future<void> _initializeData() async {
-    final viewModel = context.watch<DateSettingViewModel>();
-    await viewModel.loadSelectedDate(); // 저장된 날짜 불러오기
+    Future.microtask(() {
+      context.read<DateSettingViewModel>().loadSelectedDate();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<DateSettingViewModel>();
+
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar:
-          const CustomAppBar(title: "OuriDuri", bgColor: Colors.white),
+      appBar: const CustomAppBar(title: "OuriDuri", bgColor: Colors.white),
       body: viewModel.isLoading // 로딩 상태 확인
           ? const Center(child: CircularProgressIndicator()) // 로딩 인디케이터 표시
           : Align(
@@ -51,7 +49,9 @@ class _DateSettingScreenState extends State<DateSettingScreen> {
                     Text(
                       viewModel.getFormattedDate(),
                       style: const TextStyle(
-                          fontSize: 26, color: AppColors.primaryDarkPink, fontWeight: FontWeight.bold),
+                          fontSize: 26,
+                          color: AppColors.primaryDarkPink,
+                          fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 15),
 

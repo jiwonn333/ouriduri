@@ -1,65 +1,50 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class DateSettingViewModel with ChangeNotifier {
-  DateTime _selectedDate = DateTime(2000, 1, 1);
-  bool _isLoading = true; // 로딩 상태 변수
+class DateSettingViewModel extends ChangeNotifier {
+  static const _selectedDateKey = 'selectedDate';
+  DateTime _selectedDate = DateTime.now(); // 초기값 현재 날짜로 설정
+  bool _isLoading = false;
 
   DateTime get selectedDate => _selectedDate;
 
-  bool get isLoading => _isLoading; // 로딩 상태 반환
+  bool get isLoading => _isLoading;
 
-  DateSettingViewModel() {
-    loadSelectedDate();
+  String getFormattedDate() {
+    // String year = _selectedDate.year.toString();
+    // String month = _selectedDate.month.toString();
+    // String day = _selectedDate.day.toString();
+    // return '$year 년 $month 월 $day 일';
+
+    return DateFormat('yyyy년 MM월 dd일').format(_selectedDate);
   }
 
-  Future<String?> _getUserUID() async {
-    try {
-      final FirebaseAuth auth = FirebaseAuth.instance;
-      final User? user = auth.currentUser;
-      return user?.uid;
-    } catch (e) {
-      debugPrint("Error getting user UID: $e");
-      return null;
-    }
+  // 선택한 날짜 업데이트
+  void updateSelectedDate(DateTime newDate) {
+    _selectedDate = newDate;
+    notifyListeners();
   }
 
+  // 저장된 날짜 불러오기
   Future<void> loadSelectedDate() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? uid = await _getUserUID();
+    _isLoading = true;
+    notifyListeners();
 
-    if (uid != null) {
-      String? savedDate = prefs.getString(uid);
-      if (savedDate != null) {
-        _selectedDate = DateTime.parse(savedDate);
-      }
+    final prefs = await SharedPreferences.getInstance();
+    final savedDate = prefs.getString(_selectedDateKey);
+
+    if (savedDate != null) {
+      _selectedDate = DateTime.tryParse(savedDate) ?? DateTime.now();
     }
 
     _isLoading = false;
-    notifyListeners(); // UI 갱신
+    notifyListeners();
   }
 
+  /// 선택한 날짜 저장
   Future<void> saveSelectedDate() async {
     final prefs = await SharedPreferences.getInstance();
-    String? uid = await _getUserUID();
-
-    if (uid != null) {
-      prefs.setString('$uid-startDate', _selectedDate.toIso8601String());
-      // String formattedDate = getFormattedDate();
-      // prefs.setString('${uid}_formatted', formattedDate);
-    }
-  }
-
-  void updateSelectedDate(DateTime newDate) {
-    _selectedDate = newDate;
-    notifyListeners(); // UI 갱신
-  }
-
-  String getFormattedDate() {
-    String year = _selectedDate.year.toString();
-    String month = _selectedDate.month.toString();
-    String day = _selectedDate.day.toString();
-    return '$year 년 $month 월 $day 일';
+    await prefs.setString(_selectedDateKey, _selectedDate.toIso8601String());
   }
 }
