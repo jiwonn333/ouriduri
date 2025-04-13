@@ -82,7 +82,7 @@ class HomeBaseScreen extends StatelessWidget {
 
   Widget _buildCalendarList() {
     DateTime now = DateTime.now();
-    DateTime startOfWeek = now.subtract(Duration(days: now.weekday & 7));
+    DateTime startOfWeek = now.subtract(Duration(days: now.weekday -1));
     List<DateTime> weekDates =
         List.generate(7, (index) => startOfWeek.add(Duration(days: index)));
 
@@ -107,13 +107,28 @@ class HomeBaseScreen extends StatelessWidget {
             bool isToday = now.day == date.day && now.month == date.month;
             return Column(
               children: [
-                Text(DateFormat('d').format(date),
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: isToday ? AppColors.primaryPink.withOpacity(0.2) : Colors.transparent,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    DateFormat('d').format(date),
                     style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: isToday ? Colors.pink : Colors.grey)),
-                Text(DateFormat('E', 'ko_KR').format(date),
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: isToday ? AppColors.primaryPink : Colors.grey,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  DateFormat('E', 'ko_KR').format(date),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ],
             );
           }).toList(),
