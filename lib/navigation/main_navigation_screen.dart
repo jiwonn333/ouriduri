@@ -4,7 +4,7 @@ import 'package:ouriduri_couple_app/features/calendar/ui/calendar_screen.dart';
 import 'package:ouriduri_couple_app/features/settings/ui/settings_screen.dart';
 import 'package:ouriduri_couple_app/widgets/bottom_nav_bar.dart';
 
-import '../features/home/ui/home_base_screen.dart';
+import '../features/home/screens/home_base_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
