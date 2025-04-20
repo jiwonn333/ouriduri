@@ -5,7 +5,7 @@ import 'package:ouriduri_couple_app/features/home/viewmodels/home_base_viewmodel
 import '../ui/date_setting_page.dart';
 
 class LoveInfoHeader extends StatelessWidget {
-  const LoveInfoHeader({Key? key, required this.viewModel}) : super(key: key);
+  const LoveInfoHeader({super.key, required this.viewModel});
 
   final HomeBaseViewModel viewModel;
 
@@ -55,8 +55,8 @@ class LoveInfoHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int loveDays = viewModel.startDate != null
-        ? calculateLoveDays(viewModel.startDate!)
+    int loveDays = viewModel.anniversaryDate != null
+        ? calculateLoveDays(viewModel.anniversaryDate!)
         : 0;
     int level = getLoveLevel(loveDays);
     String levelTitle = getLevelTitle(level);
@@ -110,10 +110,12 @@ class LoveInfoHeader extends StatelessWidget {
               final selectedDate = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const DateSettingPage()),
+                  builder: (context) => const DateSettingPage(),
+                ),
               );
+
               if (selectedDate != null) {
-                viewModel.saveStartDate(selectedDate);
+                viewModel.updateAnniversaryDate(selectedDate); // 저장은 이미 되어 있음!
               }
             },
             icon: const Icon(Icons.keyboard_arrow_right_rounded),

@@ -5,6 +5,7 @@ import 'package:ouriduri_couple_app/widgets/custom_app_bar.dart';
 import 'package:ouriduri_couple_app/widgets/custom_date_picker.dart';
 import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DateSettingScreen extends StatefulWidget {
   const DateSettingScreen({super.key});
@@ -25,8 +26,8 @@ class _DateSettingScreenState extends State<DateSettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<DateSettingViewModel>();
 
+    final viewModel = context.watch<DateSettingViewModel>();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: const CustomAppBar(title: "OuriDuri", bgColor: Colors.white),
