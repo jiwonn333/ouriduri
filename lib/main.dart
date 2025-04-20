@@ -8,6 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
 import 'package:ouriduri_couple_app/core/utils/app_colors.dart';
 import 'package:ouriduri_couple_app/features/auth/ui/start_screen.dart';
+import 'package:ouriduri_couple_app/features/calendar/viewmodels/calendar_veiwmodel.dart';
 import 'package:provider/provider.dart';
 
 import 'core/services/firebase_options.dart';
@@ -30,6 +31,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => HomeBaseViewModel()),
+        ChangeNotifierProvider(create: (_) => CalendarViewModel()),
       ],
       child: const MainPage(),
     ),
