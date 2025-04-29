@@ -1,10 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ouriduri_couple_app/features/calendar/screen_views/event_list.dart';
-import 'package:ouriduri_couple_app/features/calendar/screen_views/monthly_calendar.dart';
-import 'package:ouriduri_couple_app/widgets/custom_app_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../widgets/custom_app_bar.dart';
+import '../screen_views/bottom_sheet/calendar_event_bottom_sheet.dart';
+import '../screen_views/event_list.dart';
+import '../screen_views/monthly_calendar.dart';
 import '../viewmodels/calendar_veiwmodel.dart';
 
 class CalendarScreen extends StatelessWidget {
@@ -13,40 +14,42 @@ class CalendarScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<CalendarViewModel>();
-    debugPrintAllPrefs();
+
     return Scaffold(
       appBar:
-          const CustomAppBar(title: "Calendar", bgColor: Colors.transparent),
+          const CustomAppBar(title: 'Calendar', bgColor: Colors.transparent),
       body: Column(
         children: [
           MonthlyCalendar(
-              focusedDay: viewModel.focusedDay,
-              selectedDay: viewModel.selectedDay,
-              calendarFormat: viewModel.calendarFormat,
-              events: viewModel.events,
-              onDaySelected: viewModel.onDaySelected,
-              onFormatChanged: viewModel.onFormatChanged,
-              onPageChanged: viewModel.onPageChanged),
+            focusedDay: viewModel.focusedDay,
+            selectedDay: viewModel.selectedDay,
+            calendarFormat: viewModel.calendarFormat,
+            events: viewModel.events,
+            onDaySelected: viewModel.onDaySelected,
+            onFormatChanged: viewModel.onFormatChanged,
+            onPageChanged: viewModel.onPageChanged,
+          ),
           const SizedBox(height: 20),
           EventList(
             events: viewModel.events[viewModel.selectedDay] ?? [],
-            onLongPress: (event) =>
-                viewModel.confirmDeleteEvent(context, event),
+            onLongPress: viewModel.deleteEvent,
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.edit),
-          onPressed: () => viewModel.addEventDialog(context)),
+        child: const Icon(Icons.add),
+        onPressed: () => showCupertinoModalPopup(
+          context: context,
+          barrierColor: Colors.black.withOpacity(0.3),
+          builder: (_) => FractionallySizedBox(
+            heightFactor: 0.9,
+            child: CalendarEventBottomSheet(
+              initialDate: viewModel.selectedDay,
+              onSave: viewModel.addEvent,
+            ),
+          ),
+        ),
+      ),
     );
-  }
-  void debugPrintAllPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    final allKeys = prefs.getKeys();
-
-    for (final key in allKeys) {
-      final value = prefs.get(key); // key에 해당하는 값을 가져옴
-      print('[$key] = $value');
-    }
   }
 }

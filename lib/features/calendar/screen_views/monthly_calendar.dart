@@ -47,7 +47,7 @@ class MonthlyCalendar extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         selectedTextStyle: TextStyle(
-          color: Colors.black, // 클릭된 날짜 텍스트 색상
+          color: AppColors.primaryDarkPink, // 클릭된 날짜 텍스트 색상
         ),
       ),
       headerStyle: HeaderStyle(
@@ -75,7 +75,7 @@ class MonthlyCalendar extends StatelessWidget {
                 height: 6,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.pinkAccent,
+                  color: AppColors.primaryLightPink,
                 ),
               ),
             );
