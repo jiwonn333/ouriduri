@@ -7,10 +7,6 @@ class FirebaseService {
     User? user = FirebaseAuth.instance.currentUser;
     // 앱이 삭제되었거나 세션이 유효하지 않으면 로그인된 사용자 정보는 null
     if (user == null) {
-      print("❗(firebase service) 로그인되지 않은 상태입니다.");
-      return false;
-    }
-    if (user == null) {
       print("❌ 사용자 로그인되지 않음.");
       return false;
     }
