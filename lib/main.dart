@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
 import 'package:ouriduri_couple_app/core/utils/app_colors.dart';
 import 'package:ouriduri_couple_app/features/auth/ui/start_screen.dart';
@@ -27,13 +28,19 @@ void main() async {
   await dotenv.load(fileName: "assets/env/.env");
   KakaoSdk.init(nativeAppKey: dotenv.env['KAKAO_APP_KEY']!);
 
+  // runApp(
+  //   MultiProvider(
+  //     providers: [
+  //       ChangeNotifierProvider(create: (_) => HomeBaseViewModel()),
+  //       ChangeNotifierProvider(create: (_) => CalendarViewModel()),
+  //     ],
+  //     child: const MainPage(),
+  //   ),
+  // );
+
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => HomeBaseViewModel()),
-        ChangeNotifierProvider(create: (_) => CalendarViewModel()),
-      ],
-      child: const MainPage(),
+    const ProviderScope( // 여기서부터 Riverpod 시작
+      child: MainPage(),
     ),
   );
 }

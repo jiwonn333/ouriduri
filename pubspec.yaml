@@ -51,6 +51,8 @@ dependencies:
   flutter_dotenv: ^5.2.1
   device_preview: ^1.2.0
   app_links: ^3.5.0
+  flutter_riverpod: ^2.6.1
+
 
 dev_dependencies:
   flutter_test:
