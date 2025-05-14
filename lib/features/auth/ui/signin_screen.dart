@@ -129,6 +129,8 @@ class _SignInScreenState extends State<SignInScreen> {
 
   /// 홈 화면 이동
   void _navigateToMain() {
+    if (!mounted) return; // ✅ context가 유효한지 확인
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
@@ -137,6 +139,8 @@ class _SignInScreenState extends State<SignInScreen> {
 
   /// 연결 요청 화면 이동
   void _navigateToRequest() {
+    if (!mounted) return; // ✅ context가 유효한지 확인
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const RequestScreen()),
