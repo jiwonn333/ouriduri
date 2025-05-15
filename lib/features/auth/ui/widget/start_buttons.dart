@@ -3,7 +3,7 @@ import 'package:ouriduri_couple_app/features/auth/ui/widget/terms_bottom_sheet_s
 import 'package:provider/provider.dart';
 
 import '../../../../core/utils/app_colors.dart';
-import '../signin_screen.dart';
+import '../sign_in_screen.dart';
 import '../terms_bottom_sheet.dart';
 
 class StartButtons extends StatelessWidget {

@@ -18,11 +18,6 @@ void main() async {
 
   // 강제 로그아웃 테스트 (앱 삭제 후에도 로그인 유지되는지 확인)
   // await FirebaseAuth.instance.signOut();
-
-  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform); -> app_initializer
-  // await dotenv.load(fileName: "assets/env/.env"); -> app_initializer
-  // KakaoSdk.init(nativeAppKey: dotenv.env['KAKAO_APP_KEY']!); -> app_initializer
-
   // runApp(
   //   MultiProvider(
   //     providers: [

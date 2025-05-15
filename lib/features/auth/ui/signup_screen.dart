@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ouriduri_couple_app/features/auth/ui/signin_screen.dart';
+import 'package:ouriduri_couple_app/features/auth/ui/sign_in_screen.dart';
 import 'package:ouriduri_couple_app/features/auth/viewmodels/signup_screen_viewmodel.dart';
 import 'package:ouriduri_couple_app/interface/signup_listener.dart';
 import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';

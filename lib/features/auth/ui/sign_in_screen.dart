@@ -1,31 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ouriduri_couple_app/features/auth/ui/widget/forgot_password_button.dart';
-import 'package:ouriduri_couple_app/features/auth/viewmodels/signin_screen_viewmodel.dart';
+import 'package:ouriduri_couple_app/features/auth/viewmodels/auth_viewmodel.dart';
 import 'package:ouriduri_couple_app/navigation/main_navigation_screen.dart';
 import 'package:ouriduri_couple_app/widgets/custom_dialog.dart';
 import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
 import 'package:ouriduri_couple_app/widgets/custom_text_form_field.dart';
+import 'package:provider/provider.dart';
 
-import '../../../core/services/auth_service.dart';
-import '../../../core/services/firestore_service.dart';
 import '../../connect/request_screen.dart';
+import '../providers/auth_providers.dart';
 
-class SignInScreen extends StatefulWidget {
+class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  ConsumerState<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _SignInScreenState extends ConsumerState<SignInScreen> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  final SignInScreenViewModel _viewModel = SignInScreenViewModel(
-      authService: AuthService(), fireStoreService: FireStoreService());
+  @override
+  void dispose() {
+    _idController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final authViewModel = ref.watch(authViewModelProvider);
+    final isLoggedIn = authViewModel.user != null;
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -85,9 +93,10 @@ class _SignInScreenState extends State<SignInScreen> {
                       const SizedBox(height: 24.0),
                       // 로그인 버튼
                       CustomElevatedButton(
-                          isValidated: true,
-                          onPressed: _handleSignIn,
-                          btnText: "로그인"),
+                        isValidated: true,
+                        btnText: "로그인",
+                        onPressed: authViewModel.isLoading ? (){} : () async {await _handleSignIn();}, // ref 전달 필수
+                      ),
                       const SizedBox(height: 16.0),
                     ],
                   ),
@@ -113,24 +122,24 @@ class _SignInScreenState extends State<SignInScreen> {
 
   /// 로그인 버튼 클릭 시 처리
   Future<void> _handleSignIn() async {
-    String? result = await _viewModel.signIn(
-      _idController.text,
-      _passwordController.text,
-    );
+    final id = _idController.text.trim();
+    final password = _passwordController.text.trim();
+    final viewmodel = ref.read(authViewModelProvider);
 
-    if (result == "CONNECTED") {
-      _navigateToMain();
-    } else if (result == "NOT_CONNECTED") {
-      _navigateToRequest();
+    final success = await ref.read(authViewModelProvider).signInWithId(id, password);
+    if (!mounted) return;
+
+    if (success) {
+      final isConnected = await viewmodel.checkConnection();
+      isConnected ? _navigateToMain() : _navigateToRequest();
     } else {
-      CustomDialog.show(context, result!);
+      CustomDialog.show(context, "아이디 또는 비밀번호가 잘못되었습니다.");
     }
   }
 
   /// 홈 화면 이동
   void _navigateToMain() {
-    if (!mounted) return; // ✅ context가 유효한지 확인
-
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
@@ -139,18 +148,10 @@ class _SignInScreenState extends State<SignInScreen> {
 
   /// 연결 요청 화면 이동
   void _navigateToRequest() {
-    if (!mounted) return; // ✅ context가 유효한지 확인
-
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const RequestScreen()),
     );
-  }
-
-  @override
-  void dispose() {
-    _idController.dispose();
-    _passwordController.dispose();
-    super.dispose();
   }
 }

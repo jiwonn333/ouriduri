@@ -1,27 +1,69 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+/**
+ * 직접 통신만 담당하는 클래스
+ */
 class FirebaseService {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  /// 기존 이메일 로그인
+  Future<User?> signInWithEmail(String email, String password) async {
+    final result = await _auth.signInWithEmailAndPassword(
+        email: email, password: password);
+    return result.user;
+  }
+
+  // ID 기반 로그인: id로 email 조회 후 로그인
+  Future<User?> signInWithId(String id, String password) async {
+    try {
+      final query = await FirebaseFirestore.instance
+          .collection('users')
+          .where('id', isEqualTo: id)
+          .limit(1)
+          .get();
+
+      if (query.docs.isEmpty) {
+        return null;
+      }
+
+      final data = query.docs.first.data();
+      final email = data['email'];
+      if (email == null) {
+        return null;
+      }
+
+      final result = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      return result.user;
+    } catch (e) {
+      print("❌ ID 기반 로그인 실패: $e");
+      return null;
+    }
+  }
+
+  Future<User?> signUpWithEmail(String email, String password) async {
+    final result = await _auth.createUserWithEmailAndPassword(
+        email: email, password: password);
+    return result.user;
+  }
+
+  Future<void> signOut() async => await _auth.signOut();
+
+  User? getCurrentUser() => _auth.currentUser;
+
+  Future<bool> isLoggedIn() async => _auth.currentUser != null;
+
   /// 로그인 여부 확인
   static Future<bool> isUserLoggedIn() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    // 앱이 삭제되었거나 세션이 유효하지 않으면 로그인된 사용자 정보는 null
-    if (user == null) {
-      print("❌ 사용자 로그인되지 않음.");
-      return false;
-    }
-
     try {
-      // 세션 갱신 후, 현재 사용자가 로그인된 상태인지 확인
+      User? user = FirebaseAuth.instance.currentUser;
+      // 앱이 삭제되었거나 세션이 유효하지 않으면 로그인된 사용자 정보는 null
+      if (user == null) return false;
       await user.reload();
-      user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        print("❌ 사용자 세션이 만료됨.");
-        return false;
-      }
-      return true;
-    } catch (e) {
-      print("❌ FirebaseAuth 오류: $e");
+      return FirebaseAuth.instance.currentUser != null;
+    } catch (_) {
       await FirebaseAuth.instance.signOut();
       return false;
     }
@@ -29,29 +71,16 @@ class FirebaseService {
 
   /// 커플 연결 상태 확인
   static Future<bool> isUserConnected() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      print("❌ 로그인된 사용자가 없습니다.");
-      return false;
-    }
-
     try {
-      DocumentSnapshot doc = await FirebaseFirestore.instance
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) return false;
+
+      final doc = await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
           .get();
-
-      if (!doc.exists) {
-        print("❌ Firestore에서 사용자 정보 없음.");
-        return false;
-      }
-
-      var data = doc.data() as Map<String, dynamic>;
-      bool isConnected = data['isConnected'] ?? false;
-      print("isConnected $isConnected");
-      return isConnected;
+      return (doc.data()?['isConnected'] ?? false) as bool;
     } catch (e) {
-      print("❌ Firestore 오류: $e");
       return false;
     }
   }
