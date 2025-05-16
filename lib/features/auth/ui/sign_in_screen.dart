@@ -7,7 +7,7 @@ import 'package:ouriduri_couple_app/widgets/custom_dialog.dart';
 import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
 import 'package:ouriduri_couple_app/widgets/custom_text_form_field.dart';
 
-import '../providers/auth_providers.dart';
+import '../presentation/viewmodels/auth_view_model.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
