@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ouriduri_couple_app/features/auth/ui/widget/forgot_password_button.dart';
-import 'package:ouriduri_couple_app/features/auth/viewmodels/auth_viewmodel.dart';
+import 'package:ouriduri_couple_app/features/connect/request_screen.dart';
 import 'package:ouriduri_couple_app/navigation/main_navigation_screen.dart';
 import 'package:ouriduri_couple_app/widgets/custom_dialog.dart';
 import 'package:ouriduri_couple_app/widgets/custom_elevated_button.dart';
 import 'package:ouriduri_couple_app/widgets/custom_text_form_field.dart';
-import 'package:provider/provider.dart';
 
-import '../../connect/request_screen.dart';
 import '../providers/auth_providers.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
@@ -31,21 +29,16 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authViewModel = ref.watch(authViewModelProvider);
-    final isLoggedIn = authViewModel.user != null;
+    final authState = ref.watch(authViewModelProvider);
 
     return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
+      onTap: () => FocusScope.of(context).unfocus(),
       child: FractionallySizedBox(
         heightFactor: 0.9,
         child: Container(
           decoration: const BoxDecoration(
             color: Colors.white70,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(20),
-            ),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: SafeArea(
             child: Stack(
@@ -58,7 +51,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const SizedBox(height: 24.0),
-                      // 로그인 타이틀
                       const Center(
                         child: Text(
                           '로그인',
@@ -68,9 +60,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                               color: Colors.black),
                         ),
                       ),
-
                       const SizedBox(height: 24.0),
-                      // id
                       CustomTextFormField(
                         controller: _idController,
                         hintText: "아이디",
@@ -79,7 +69,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         validator: (value) {},
                       ),
                       const SizedBox(height: 16.0),
-                      // pw
                       CustomTextFormField(
                         controller: _passwordController,
                         hintText: "비밀번호",
@@ -87,29 +76,24 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         obscureText: true,
                         validator: (value) {},
                       ),
-
                       const SizedBox(height: 16.0),
                       const ForgotPasswordButton(),
                       const SizedBox(height: 24.0),
-                      // 로그인 버튼
                       CustomElevatedButton(
                         isValidated: true,
                         btnText: "로그인",
-                        onPressed: authViewModel.isLoading ? (){} : () async {await _handleSignIn();}, // ref 전달 필수
+                        onPressed: () => _handleSignIn(ref),
                       ),
                       const SizedBox(height: 16.0),
                     ],
                   ),
                 ),
-                // 닫기 버튼
                 Positioned(
                   top: 8.0,
                   left: 8.0,
                   child: IconButton(
                     icon: const Icon(Icons.close_rounded),
-                    onPressed: () {
-                      Navigator.pop(context); // Bottom Sheet 닫기
-                    },
+                    onPressed: () => Navigator.pop(context),
                   ),
                 ),
               ],
@@ -120,13 +104,12 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     );
   }
 
-  /// 로그인 버튼 클릭 시 처리
-  Future<void> _handleSignIn() async {
+  Future<void> _handleSignIn(WidgetRef ref) async {
     final id = _idController.text.trim();
     final password = _passwordController.text.trim();
-    final viewmodel = ref.read(authViewModelProvider);
+    final viewmodel = ref.read(authViewModelProvider.notifier);
 
-    final success = await ref.read(authViewModelProvider).signInWithId(id, password);
+    final success = await viewmodel.signInWithId(id, password);
     if (!mounted) return;
 
     if (success) {
@@ -137,7 +120,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     }
   }
 
-  /// 홈 화면 이동
   void _navigateToMain() {
     if (!mounted) return;
     Navigator.pushReplacement(
@@ -146,7 +128,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     );
   }
 
-  /// 연결 요청 화면 이동
   void _navigateToRequest() {
     if (!mounted) return;
     Navigator.pushReplacement(
