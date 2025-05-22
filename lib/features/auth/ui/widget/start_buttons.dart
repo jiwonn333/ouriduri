@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../core/utils/app_colors.dart';
 import '../sign_in_screen.dart';
-import '../terms_bottom_sheet.dart';
+import '../../view/terms_bottom_sheet.dart';
 
 class StartButtons extends StatelessWidget {
   const StartButtons({super.key});
